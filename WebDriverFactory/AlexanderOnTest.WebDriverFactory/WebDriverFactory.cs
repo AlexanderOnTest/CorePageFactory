@@ -15,67 +15,196 @@ namespace AlexanderOnTest.WebDriverFactory
     {
         private static string DriverPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-        public static IWebDriver GetLocalWindowsWebDriver(Browser browser)
+        /// <summary>
+        /// Return a local webdriver of the given browser type with default settings.
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="headless"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, bool headless = false)
         {
             switch (browser)
             {
                 case Browser.Firefox:
-                    return new FirefoxDriver(DriverPath);
+                    return GetLocalWebDriver(browser, new FirefoxOptions(), WindowSize.hd, headless);
 
                 case Browser.Chrome:
-                    return new ChromeDriver(DriverPath);
+                    return GetLocalWebDriver(browser, new ChromeOptions(), WindowSize.hd, headless);
 
                 case Browser.InternetExplorer:
-                    if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
+                    if (headless)
                     {
-                        throw new PlatformNotSupportedException("Microsoft Internet Explorer is only available on Microsoft Windows.");
+                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
                     }
-                    return new InternetExplorerDriver(DriverPath);
+                    return GetLocalWebDriver(browser, new InternetExplorerOptions());
 
                 case Browser.Edge:
-                    if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
+                    if (headless)
                     {
-                        throw new PlatformNotSupportedException("Microsoft Edge is only available on Microsoft Windows.");
+                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
                     }
-                    return new EdgeDriver(DriverPath);
+                    return GetLocalWebDriver(browser, new EdgeOptions());
 
                 case Browser.Safari:
-                    if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
+                    if (headless)
                     {
-                        throw new PlatformNotSupportedException("Safari is only available on Mac Os.");
+                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
                     }
-                    // I suspect that the SafariDriver is alredy on the path as it is Within Safari.
-                    // I currently have no means to test.
-                    return new SafariDriver();
+                    return GetLocalWebDriver(browser, new SafariOptions());
 
                 default:
-                    throw new PlatformNotSupportedException();
+                    throw new PlatformNotSupportedException($"{browser} is not currently supported.");
             }
         }
 
-        public static IWebDriver GetHdLocalWindowsWebDriver(Browser browser)
+        /// <summary>
+        /// Return a Local Chrome WebDriver instance.
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="options"></param>
+        /// <param name="windowSize"></param>
+        /// <param name="headless"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, ChromeOptions options, WindowSize windowSize = WindowSize.hd, bool headless = false)
         {
-            return GetLocalWindowsWebDriver(browser, new Size(1366, 768));
+            if (browser != Browser.Chrome)
+            {
+                throw new ArgumentException("Options Mismatch: ChromeDriver can only launch with ChromeOptions");
+            }
+            IWebDriver driver = new ChromeDriver(DriverPath, headless ? options : AddHeadlessOption(options));
+            return SetWindowSize(driver, windowSize);
         }
 
-        public static IWebDriver GetFhdLocalWindowsWebDriver(Browser browser)
+        /// <summary>
+        /// Return a local Firefox WebDriver instance.
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="options"></param>
+        /// <param name="windowSize"></param>
+        /// <param name="headless"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, FirefoxOptions options, WindowSize windowSize = WindowSize.hd, bool headless = false)
         {
-            return GetLocalWindowsWebDriver(browser, new Size(1920, 1080));
+            if (browser != Browser.Firefox)
+            {
+                throw new ArgumentException("Options Mismatch: FirefoxDriver can only launch with FirefoxOptions");
+            }
+
+            IWebDriver driver = new FirefoxDriver(DriverPath, headless ? options : AddHeadlessOption(options));
+            return SetWindowSize(driver, windowSize);
+        }
+
+        /// <summary>
+        /// Return a local Edge WebDriver instance. (Only supported on Microsoft Windows 10)
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="options"></param>
+        /// <param name="windowSize"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, EdgeOptions options, WindowSize windowSize = WindowSize.hd)
+        {
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
+            {
+                throw new PlatformNotSupportedException("Microsoft Edge is only available on Microsoft Windows.");
+            }
+            if (browser != Browser.Edge)
+            {
+                throw new ArgumentException("Options Mismatch: EdgeDriver can only launch with EdgeOptions");
+            }
+
+            IWebDriver driver = new EdgeDriver(DriverPath, options);
+            return SetWindowSize(driver, windowSize);
+        }
+
+        /// <summary>
+        /// Return a local Internet Explorer WebDriver instance. (Only supported on Microsoft Windows)
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="options"></param>
+        /// <param name="windowSize"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, InternetExplorerOptions options, WindowSize windowSize = WindowSize.hd)
+        {
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
+            {
+                throw new PlatformNotSupportedException("Microsoft Internet Explorer is only available on Microsoft Windows.");
+            }
+            if (browser != Browser.InternetExplorer)
+            {
+                throw new ArgumentException("Options Mismatch: InternetExplorerDriver can only launch with InternetExplorerOptions");
+            }
+
+            IWebDriver driver = new InternetExplorerDriver(DriverPath, options);
+            return SetWindowSize(driver, windowSize);
         }
         
-        public static IWebDriver GetFullScreenLocalWindowsWebDriver(Browser browser)
+        /// <summary>
+        /// Return a local Safari WebDriver instance. (Only supported on Mac Os)
+        /// </summary>
+        /// <param name="browser"></param>
+        /// <param name="options"></param>
+        /// <param name="windowSize"></param>
+        /// <returns></returns>
+        public static IWebDriver GetLocalWebDriver(Browser browser, SafariOptions options, WindowSize windowSize = WindowSize.hd)
         {
-            IWebDriver newWebDriver = GetLocalWindowsWebDriver(browser);
-            newWebDriver.Manage().Window.FullScreen(); 
-            return newWebDriver;
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
+            {
+                throw new PlatformNotSupportedException("Safari is only available on Mac Os.");
+            }
+            if (browser != Browser.Safari)
+            {
+                throw new ArgumentException("Options Mismatch: SafariDriver can only launch with SafariOptions");
+            }
+            // I suspect that the SafariDriver is already on the path as it is within the Safari executable.
+            // I currently have no means to test this
+
+            IWebDriver driver = new SafariDriver(options);
+            return SetWindowSize(driver, windowSize);
         }
 
-        public static IWebDriver GetLocalWindowsWebDriver(Browser browser, Size windowSize)
+        /// <summary>
+        /// Convenience method for setiing the Window Size to common values. (768P, 1080P and fullscreen)
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="windowSize"></param>
+        /// <returns></returns>
+        public static IWebDriver SetWindowSize(IWebDriver driver, WindowSize windowSize)
         {
-            IWebDriver newWebDriver = GetLocalWindowsWebDriver(browser);
-            newWebDriver.Manage().Window.Position = Point.Empty;
-            newWebDriver.Manage().Window.Size = windowSize;
-            return newWebDriver;
+            switch (windowSize)
+            {
+                case WindowSize.fullScreen:
+                    driver.Manage().Window.FullScreen();
+                    return driver;
+
+                case WindowSize.fhd:
+                    driver.Manage().Window.Position = Point.Empty;
+                    driver.Manage().Window.Size = new Size(1920, 1080);
+                    return driver;
+
+                default:
+                    driver.Manage().Window.Position = Point.Empty;
+                    driver.Manage().Window.Size = new Size(1366, 768);
+                    return driver;
+            }
+        }
+
+        private static T AddHeadlessOption<T>(T options)
+        {
+            if (options is ChromeOptions)
+            {
+                ChromeOptions chromeOptions = options as ChromeOptions;
+                chromeOptions.AddArguments("--headless");
+                return options;
+            }
+
+            if (options is FirefoxOptions)
+            {
+                FirefoxOptions firefoxOptions = options as FirefoxOptions;
+                firefoxOptions.AddArguments("--headless");
+                return options;
+            }
+
+            throw new ArgumentException($"Headless mode is not currently supported for the requested browser.");
         }
     }
 }
