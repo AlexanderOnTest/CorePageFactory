@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>AlexanderOnTest</Company>
+    <PackageId>Selenium.WebDriver.DotnetCore.WebDriverFactory</PackageId>
+    <Authors>Alexander Dunn</Authors>
+    <Product>AlexanderOnTest.CorePageFactory</Product>
+    <PackageTags>WebDriver, Selenium, launcher, .net Core</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>The simplest way to launch a Local Selenium WebDriver instance for your .net Core test project.
+Add the appropriate WebDriver package to your .net Core test project 
+(I recommend  jsakamoto's Selenium.Webdriver.xxxxxxx packages and the official Microsoft WebDriver package)
+Then launching the webdriver is as simple as
+IWebDriver driver = WebDriverFactory.GetLocalWebDriver(Browser.Firefox);
+Supported Platforms:
+Windows:- Chrome, Firefox, Edge, InternetExplorer
+Linux:- Chrome, Firefox
+Macos (Experimental): Chrome, Firefox, Safari</Description>
+    <Copyright>Copyright (c) 2018 Alexander Dunn</Copyright>
+    <PackageProjectUrl>https://github.com/AlexanderOnTesting/CorePageFactory</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/AlexanderOnTesting/CorePageFactory/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>0.9.0</Version>
+    <PackageReleaseNotes>Trial release of my simple WebDriverFactory implementation</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Selenium.Support" Version="3.14.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.14.0" />
+  </ItemGroup>
+
+</Project>
