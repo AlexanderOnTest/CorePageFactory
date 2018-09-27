@@ -23,33 +23,25 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <returns></returns>
         public static IWebDriver GetLocalWebDriver(Browser browser, bool headless = false)
         {
+            if (headless && !(browser == Browser.Chrome || browser == Browser.Firefox))
+            {
+                throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
+            }
             switch (browser)
             {
                 case Browser.Firefox:
-                    return GetLocalWebDriver(browser, new FirefoxOptions(), WindowSize.hd, headless);
+                    return GetLocalWebDriver(browser, new FirefoxOptions(), WindowSize.Hd, headless);
 
                 case Browser.Chrome:
-                    return GetLocalWebDriver(browser, new ChromeOptions(), WindowSize.hd, headless);
+                    return GetLocalWebDriver(browser, new ChromeOptions(), WindowSize.Hd, headless);
 
                 case Browser.InternetExplorer:
-                    if (headless)
-                    {
-                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
-                    }
                     return GetLocalWebDriver(browser, new InternetExplorerOptions());
 
                 case Browser.Edge:
-                    if (headless)
-                    {
-                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
-                    }
                     return GetLocalWebDriver(browser, new EdgeOptions());
 
                 case Browser.Safari:
-                    if (headless)
-                    {
-                        throw new ArgumentException($"Headless mode is not currently supported for {browser}.");
-                    }
                     return GetLocalWebDriver(browser, new SafariOptions());
 
                 default:
@@ -65,13 +57,19 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <param name="windowSize"></param>
         /// <param name="headless"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(Browser browser, ChromeOptions options, WindowSize windowSize = WindowSize.hd, bool headless = false)
+        public static IWebDriver GetLocalWebDriver(Browser browser, ChromeOptions options, WindowSize windowSize = WindowSize.Hd, bool headless = false)
         {
             if (browser != Browser.Chrome)
             {
-                throw new ArgumentException("Options Mismatch: ChromeDriver can only launch with ChromeOptions");
+                throw new ArgumentException($"Options Mismatch: {nameof(browser)} can only launch with ChromeOptions");
             }
-            IWebDriver driver = new ChromeDriver(DriverPath, headless ? options : AddHeadlessOption(options));
+
+            if (headless)
+            {
+                options.AddArgument("--headless");
+            }
+
+            IWebDriver driver = new ChromeDriver(DriverPath, options);
             return SetWindowSize(driver, windowSize);
         }
 
@@ -83,14 +81,19 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <param name="windowSize"></param>
         /// <param name="headless"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(Browser browser, FirefoxOptions options, WindowSize windowSize = WindowSize.hd, bool headless = false)
+        public static IWebDriver GetLocalWebDriver(Browser browser, FirefoxOptions options, WindowSize windowSize = WindowSize.Hd, bool headless = false)
         {
             if (browser != Browser.Firefox)
             {
-                throw new ArgumentException("Options Mismatch: FirefoxDriver can only launch with FirefoxOptions");
+                throw new ArgumentException($"Options Mismatch: {nameof(browser)} can only launch with FirefoxOptions");
             }
 
-            IWebDriver driver = new FirefoxDriver(DriverPath, headless ? options : AddHeadlessOption(options));
+            if (headless)
+            {
+                options.AddArgument("--headless");
+            }
+
+            IWebDriver driver = new FirefoxDriver(DriverPath, options);
             return SetWindowSize(driver, windowSize);
         }
 
@@ -101,7 +104,7 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <param name="options"></param>
         /// <param name="windowSize"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(Browser browser, EdgeOptions options, WindowSize windowSize = WindowSize.hd)
+        public static IWebDriver GetLocalWebDriver(Browser browser, EdgeOptions options, WindowSize windowSize = WindowSize.Hd)
         {
             if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
             {
@@ -109,7 +112,7 @@ namespace AlexanderOnTest.WebDriverFactory
             }
             if (browser != Browser.Edge)
             {
-                throw new ArgumentException("Options Mismatch: EdgeDriver can only launch with EdgeOptions");
+                throw new ArgumentException($"Options Mismatch: {nameof(browser)} can only launch with FirefoxOptions");
             }
 
             IWebDriver driver = new EdgeDriver(DriverPath, options);
@@ -123,7 +126,7 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <param name="options"></param>
         /// <param name="windowSize"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(Browser browser, InternetExplorerOptions options, WindowSize windowSize = WindowSize.hd)
+        public static IWebDriver GetLocalWebDriver(Browser browser, InternetExplorerOptions options, WindowSize windowSize = WindowSize.Hd)
         {
             if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.WinNT))
             {
@@ -131,7 +134,7 @@ namespace AlexanderOnTest.WebDriverFactory
             }
             if (browser != Browser.InternetExplorer)
             {
-                throw new ArgumentException("Options Mismatch: InternetExplorerDriver can only launch with InternetExplorerOptions");
+                throw new ArgumentException($"Options Mismatch: {nameof(browser)} can only launch with FirefoxOptions");
             }
 
             IWebDriver driver = new InternetExplorerDriver(DriverPath, options);
@@ -145,7 +148,7 @@ namespace AlexanderOnTest.WebDriverFactory
         /// <param name="options"></param>
         /// <param name="windowSize"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(Browser browser, SafariOptions options, WindowSize windowSize = WindowSize.hd)
+        public static IWebDriver GetLocalWebDriver(Browser browser, SafariOptions options, WindowSize windowSize = WindowSize.Hd)
         {
             if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
             {
@@ -153,17 +156,17 @@ namespace AlexanderOnTest.WebDriverFactory
             }
             if (browser != Browser.Safari)
             {
-                throw new ArgumentException("Options Mismatch: SafariDriver can only launch with SafariOptions");
+                throw new ArgumentException($"Options Mismatch: {nameof(browser)} can only launch with FirefoxOptions");
             }
+            
             // I suspect that the SafariDriver is already on the path as it is within the Safari executable.
             // I currently have no means to test this
-
             IWebDriver driver = new SafariDriver(options);
             return SetWindowSize(driver, windowSize);
         }
 
         /// <summary>
-        /// Convenience method for setiing the Window Size to common values. (768P, 1080P and fullscreen)
+        /// Convenience method for setting the Window Size of a WebDriver to common values. (768P, 1080P and fullscreen)
         /// </summary>
         /// <param name="driver"></param>
         /// <param name="windowSize"></param>
@@ -172,11 +175,11 @@ namespace AlexanderOnTest.WebDriverFactory
         {
             switch (windowSize)
             {
-                case WindowSize.fullScreen:
-                    driver.Manage().Window.FullScreen();
+                case WindowSize.Maximise:
+                    driver.Manage().Window.Maximize();
                     return driver;
 
-                case WindowSize.fhd:
+                case WindowSize.Fhd:
                     driver.Manage().Window.Position = Point.Empty;
                     driver.Manage().Window.Size = new Size(1920, 1080);
                     return driver;
@@ -186,25 +189,6 @@ namespace AlexanderOnTest.WebDriverFactory
                     driver.Manage().Window.Size = new Size(1366, 768);
                     return driver;
             }
-        }
-
-        private static T AddHeadlessOption<T>(T options)
-        {
-            if (options is ChromeOptions)
-            {
-                ChromeOptions chromeOptions = options as ChromeOptions;
-                chromeOptions.AddArguments("--headless");
-                return options;
-            }
-
-            if (options is FirefoxOptions)
-            {
-                FirefoxOptions firefoxOptions = options as FirefoxOptions;
-                firefoxOptions.AddArguments("--headless");
-                return options;
-            }
-
-            throw new ArgumentException($"Headless mode is not currently supported for the requested browser.");
         }
     }
 }

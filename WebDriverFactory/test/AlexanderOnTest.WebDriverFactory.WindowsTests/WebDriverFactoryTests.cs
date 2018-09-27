@@ -1,8 +1,8 @@
 using System;
+using System.Drawing;
 using FluentAssertions;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 
 namespace AlexanderOnTest.WebDriverFactory.WindowsTests
@@ -33,10 +33,12 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
 
         [Test]
         [TestCase(Browser.Safari)]
-        public void RequestingUnsupportedWebDriverThrowsException(Browser browser)
+        public void RequestingUnsupportedWebDriverThrowsInformativeException(Browser browser)
         {
             Action act = () => WebDriverFactory.GetLocalWebDriver(browser);
-            act.Should().ThrowExactly<PlatformNotSupportedException>($"because {browser} is not supported on {thisPlatformType}.");
+            act.Should()
+                .Throw<PlatformNotSupportedException>($"because {browser} is not supported on {thisPlatformType}.")
+                .WithMessage("*is only available on*");
         }
 
         [Test]
@@ -56,9 +58,37 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         public void RequestingUnsupportedHeadlessBrowserThrowsInformativeException(Browser browser)
         {
             Action act = () => WebDriverFactory.GetLocalWebDriver(browser, true);
-            act.Should().ThrowExactly<ArgumentException>($"because headless mode is not supported on {browser}.");
+            act.Should()
+                .ThrowExactly<ArgumentException>($"because headless mode is not supported on {browser}.")
+                .WithMessage($"Headless mode is not currently supported for {browser}.");
         }
 
+        [Test]
+        public void HdBrowserIsOfRequestedSize()
+        {
+            Driver = WebDriverFactory.GetLocalWebDriver(Browser.Firefox, new FirefoxOptions(), WindowSize.Hd, true);
+            
+            Assert.Multiple(() =>
+            {
+                Size size = Driver.Manage().Window.Size;
+                size.Width.Should().Be(1366);
+                size.Height.Should().Be(768);
+            });
+        }
+        
+        [Test]
+        public void FhdBrowserIsOfRequestedSize()
+        {
+            Driver = WebDriverFactory.GetLocalWebDriver(Browser.Firefox, new FirefoxOptions(), WindowSize.Fhd, true);
+            
+            Assert.Multiple(() =>
+            {
+                Size size = Driver.Manage().Window.Size;
+                size.Height.Should().Be(1080);
+                size.Width.Should().Be(1920);
+            });
+        }
+        
         [TearDown]
         public void Teardown()
         {

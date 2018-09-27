@@ -2,8 +2,8 @@
 {
     public enum WindowSize
     {
-        hd,
-        fhd,
-        fullScreen
+        Hd,
+        Fhd,
+        Maximise
     }
 }
