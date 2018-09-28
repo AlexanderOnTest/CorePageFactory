@@ -4,8 +4,6 @@ dotnet: 2.1
 addons:
   sonarcloud:
     organization: "alexanderontesting-github"
-    token:
-      secure: ********* # encrypted value of your token
 script:
  - dotnet build .\WebDriverFactory\src\AlexanderOnTest.WebDriverFactory\AlexanderOnTest.WebDriverFactory.csproj
  - sonar-scanner
