@@ -3,11 +3,9 @@ solution: CorePageFactory.sln
 dotnet: 2.1
 addons:
   sonarcloud:
-    organization: "sonarcloud_organization_key" # the key of the org you chose at step #3
+    organization: "alexanderontesting-github"
     token:
       secure: ********* # encrypted value of your token
-script:
-  # other script steps might be done before running the actual analysis
 script:
  - dotnet build .\WebDriverFactory\src\AlexanderOnTest.WebDriverFactory\AlexanderOnTest.WebDriverFactory.csproj
  - sonar-scanner
