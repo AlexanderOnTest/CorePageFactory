@@ -12,8 +12,9 @@ using OpenQA.Selenium.Safari;
 
 namespace AlexanderOnTest.WebDriverFactory
 {
-    public static class WebDriverFactory
-    {        private static string DriverPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+    public static class StaticWebDriverFactory
+    {
+        private static string DriverPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         /// <summary>
         /// Return a local webdriver of the given browser type with default settings.
@@ -30,19 +31,19 @@ namespace AlexanderOnTest.WebDriverFactory
             switch (browser)
             {
                 case Browser.Firefox:
-                    return GetLocalWebDriver(new FirefoxOptions(), WindowSize.Hd, headless);
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(headless));
 
                 case Browser.Chrome:
-                    return GetLocalWebDriver(new ChromeOptions(), WindowSize.Hd, headless);
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetChromeOptions(headless));
 
                 case Browser.InternetExplorer:
-                    return GetLocalWebDriver(new InternetExplorerOptions());
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetInternetExplorerOptions());
 
                 case Browser.Edge:
-                    return GetLocalWebDriver(new EdgeOptions());
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetEdgeOptions());
 
                 case Browser.Safari:
-                    return GetLocalWebDriver(new SafariOptions());
+                    return GetLocalWebDriver(StaticDriverOptionsFactory.GetSafariOptions());
 
                 default:
                     throw new PlatformNotSupportedException($"{browser} is not currently supported.");
@@ -55,16 +56,9 @@ namespace AlexanderOnTest.WebDriverFactory
         /// </summary>
         /// <param name="options"></param>
         /// <param name="windowSize"></param>
-        /// <param name="headless"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(ChromeOptions options, WindowSize windowSize = WindowSize.Hd,
-            bool headless = false)
+        public static IWebDriver GetLocalWebDriver(ChromeOptions options, WindowSize windowSize = WindowSize.Hd)
         {
-            if (headless)
-            {
-                options.AddArgument("--headless");
-            }
-
             IWebDriver driver = new ChromeDriver(DriverPath, options);
             return SetWindowSize(driver, windowSize);
         }
@@ -74,16 +68,9 @@ namespace AlexanderOnTest.WebDriverFactory
         /// </summary>
         /// <param name="options"></param>
         /// <param name="windowSize"></param>
-        /// <param name="headless"></param>
         /// <returns></returns>
-        public static IWebDriver GetLocalWebDriver(FirefoxOptions options, WindowSize windowSize = WindowSize.Hd,
-            bool headless = false)
+        public static IWebDriver GetLocalWebDriver(FirefoxOptions options, WindowSize windowSize = WindowSize.Hd)
         {
-            if (headless)
-            {
-                options.AddArgument("--headless");
-            }
-
             IWebDriver driver = new FirefoxDriver(DriverPath, options);
             return SetWindowSize(driver, windowSize);
         }
@@ -142,45 +129,49 @@ namespace AlexanderOnTest.WebDriverFactory
         }
 
         /// <summary>
-        /// Return a local Safari WebDriver instance. (Only supported on Mac Os)
+        /// Return a RemoteWebDriver of the given browser type with default settings.
         /// </summary>
-        /// <param name="gridUrl"></param>
         /// <param name="options"></param>
-        /// <param name="platformType"></param>
+        /// <param name="gridUrl"></param>
         /// <param name="windowSize"></param>
         /// <returns></returns>
-        public static IWebDriver GetRemoteWebDriver(Uri gridUrl, DriverOptions options,
-            PlatformType platformType = PlatformType.Any, WindowSize windowSize = WindowSize.Hd)
+        public static IWebDriver GetRemoteWebDriver(
+            DriverOptions options,
+            Uri gridUrl,
+            WindowSize windowSize = WindowSize.Hd)
         {
             IWebDriver driver = new RemoteWebDriver(gridUrl, options);
             return SetWindowSize(driver, windowSize);
         }
 
         /// <summary>
-        /// Return a RemoteWebDriver of the given browser type with default settings.
+        /// Return a configured RemoteWebDriver of the given browser type with default settings.
         /// </summary>
-        /// <param name="gridUrl"></param>
         /// <param name="browser"></param>
+        /// <param name="gridUrl"></param>
+        /// <param name="platformType"></param>
         /// <returns></returns>
-        public static IWebDriver GetRemoteWebDriver(Uri gridUrl, Browser browser, PlatformType platformType = PlatformType.Any)
+        public static IWebDriver GetRemoteWebDriver(
+            Browser browser,
+            Uri gridUrl,
+            PlatformType platformType = PlatformType.Any)
         {
-            //todo configure options with platform type
             switch (browser)
             {
                 case Browser.Firefox:
-                    return GetRemoteWebDriver(gridUrl, new FirefoxOptions());
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(platformType), gridUrl);
 
                 case Browser.Chrome:
-                    return GetRemoteWebDriver(gridUrl, new ChromeOptions());
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetChromeOptions(platformType), gridUrl);
 
                 case Browser.InternetExplorer:
-                    return GetRemoteWebDriver(gridUrl, new InternetExplorerOptions());
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetInternetExplorerOptions(platformType), gridUrl);
 
                 case Browser.Edge:
-                    return GetRemoteWebDriver(gridUrl, new EdgeOptions());
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetEdgeOptions(platformType), gridUrl);
 
                 case Browser.Safari:
-                    return GetRemoteWebDriver(gridUrl, new SafariOptions());
+                    return GetRemoteWebDriver(StaticDriverOptionsFactory.GetSafariOptions(platformType), gridUrl);
 
                 default:
                     throw new PlatformNotSupportedException($"{browser} is not currently supported.");
@@ -197,8 +188,16 @@ namespace AlexanderOnTest.WebDriverFactory
         {
             switch (windowSize)
             {
+                case WindowSize.Unchanged:
+                    return driver;
+
                 case WindowSize.Maximise:
                     driver.Manage().Window.Maximize();
+                    return driver;
+
+                case WindowSize.Hd:
+                    driver.Manage().Window.Position = Point.Empty;
+                    driver.Manage().Window.Size = new Size(1366, 768);
                     return driver;
 
                 case WindowSize.Fhd:
@@ -207,8 +206,6 @@ namespace AlexanderOnTest.WebDriverFactory
                     return driver;
 
                 default:
-                    driver.Manage().Window.Position = Point.Empty;
-                    driver.Manage().Window.Size = new Size(1366, 768);
                     return driver;
             }
         }

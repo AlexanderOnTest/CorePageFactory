@@ -8,7 +8,7 @@ using OpenQA.Selenium.Firefox;
 namespace AlexanderOnTest.WebDriverFactory.MacOsTests
 {
     [TestFixture]
-    public class WebDriverFactoryTests
+    public class StaticWebDriverFactoryTests
     {
         private IWebDriver Driver { get; set; }
         private readonly PlatformType thisPlatformType = PlatformType.Mac;
@@ -25,7 +25,7 @@ namespace AlexanderOnTest.WebDriverFactory.MacOsTests
         [TestCase(Browser.Safari)]
         public void LocalWebDriverCanBeLaunchedAndLoadExampleDotCom(Browser browser)
         {
-            Driver = WebDriverFactory.GetLocalWebDriver(browser);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(browser);
             Driver.Url = "https://example.com/";
             Driver.Title.Should().Be("Example Domain");
         }
@@ -35,7 +35,7 @@ namespace AlexanderOnTest.WebDriverFactory.MacOsTests
         [TestCase(Browser.InternetExplorer)]
         public void RequestingUnsupportedWebDriverThrowsInformativeException(Browser browser)
         {
-            Action act = () => WebDriverFactory.GetLocalWebDriver(browser);
+            Action act = () => StaticWebDriverFactory.GetLocalWebDriver(browser);
             act.Should()
                 .Throw<PlatformNotSupportedException>($"because {browser} is not supported on {thisPlatformType}.")
                 .WithMessage("*is only available on*");
@@ -46,7 +46,7 @@ namespace AlexanderOnTest.WebDriverFactory.MacOsTests
         [TestCase(Browser.Firefox)]
         public void HeadlessBrowsersCanBeLaunched(Browser browser)
         {
-            Driver = WebDriverFactory.GetLocalWebDriver(browser, true);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(browser, true);
             Driver.Url = "https://example.com/";
             Driver.Title.Should().Be("Example Domain");
         }
@@ -57,17 +57,17 @@ namespace AlexanderOnTest.WebDriverFactory.MacOsTests
         [TestCase(Browser.Safari)]
         public void RequestingUnsupportedHeadlessBrowserThrowsInformativeException(Browser browser)
         {
-            Action act = () => WebDriverFactory.GetLocalWebDriver(browser, true);
+            Action act = () => StaticWebDriverFactory.GetLocalWebDriver(browser, true);
             act.Should()
                 .ThrowExactly<ArgumentException>($"because headless mode is not supported on {browser}.")
                 .WithMessage($"Headless mode is not currently supported for {browser}.");
         }
-        
+
         [Test]
         public void HdBrowserIsOfRequestedSize()
         {
-            Driver = WebDriverFactory.GetLocalWebDriver(new FirefoxOptions(), WindowSize.Hd, true);
-            
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Hd);
+
             Assert.Multiple(() =>
             {
                 Size size = Driver.Manage().Window.Size;
@@ -75,12 +75,12 @@ namespace AlexanderOnTest.WebDriverFactory.MacOsTests
                 size.Height.Should().Be(768);
             });
         }
-        
+
         [Test]
         public void FhdBrowserIsOfRequestedSize()
         {
-            Driver = WebDriverFactory.GetLocalWebDriver(new FirefoxOptions(), WindowSize.Fhd, true);
-            
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Fhd);
+
             Assert.Multiple(() =>
             {
                 Size size = Driver.Manage().Window.Size;
