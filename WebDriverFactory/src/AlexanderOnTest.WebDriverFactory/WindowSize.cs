@@ -4,6 +4,7 @@
     {
         Hd,
         Fhd,
-        Maximise
+        Maximise,
+        Unchanged
     }
 }
