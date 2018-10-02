@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AlexanderOnTest.WebDriverFactory\AlexanderOnTest.WebDriverFactory.csproj" />
+    <ProjectReference Include="..\..\..\src\WebDriverFactory\AoT.WebDriverFactory\AoT.WebDriverFactory.csproj" />
   </ItemGroup>
 
 </Project>

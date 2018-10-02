@@ -10,7 +10,7 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 
-namespace AlexanderOnTest.WebDriverFactory
+namespace AoT.WebDriverFactory
 {
     public static class StaticWebDriverFactory
     {

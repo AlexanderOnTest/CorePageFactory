@@ -1,4 +1,4 @@
-﻿namespace AlexanderOnTest.WebDriverFactory
+﻿namespace AoT.WebDriverFactory
 {
     public enum Browser
     {
