@@ -3,22 +3,19 @@ using System.Drawing;
 using FluentAssertions;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
 
-namespace AlexanderOnTest.WebDriverFactory.WindowsTests
+namespace AoT.WebDriverFactory.WindowsTests
 {
     [TestFixture]
-    public class WebDriverFactoryInstanceTests
+    public class StaticWebDriverFactoryTests
     {
         private IWebDriver Driver { get; set; }
         private readonly PlatformType thisPlatformType = PlatformType.Windows;
-        private IWebDriverFactory WebDriverFactory { get; set; }
 
         [OneTimeSetUp]
-        public void SetUp()
+        public void CheckForValidPlatform()
         {
             Assume.That(() => Platform.CurrentPlatform.IsPlatformType(thisPlatformType));
-            this.WebDriverFactory = new DefaultWebDriverFactory();
         }
 
         [Test]
@@ -28,7 +25,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [TestCase(Browser.Chrome)]
         public void LocalWebDriverCanBeLaunchedAndLoadExampleDotCom(Browser browser)
         {
-            Driver = this.WebDriverFactory.GetLocalWebDriver(browser);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(browser);
             Driver.Url = "https://example.com/";
             Driver.Title.Should().Be("Example Domain");
         }
@@ -37,7 +34,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [TestCase(Browser.Safari)]
         public void RequestingUnsupportedWebDriverThrowsInformativeException(Browser browser)
         {
-            Action act = () => this.WebDriverFactory.GetLocalWebDriver(browser);
+            Action act = () => StaticWebDriverFactory.GetLocalWebDriver(browser);
             act.Should()
                 .Throw<PlatformNotSupportedException>($"because {browser} is not supported on {thisPlatformType}.")
                 .WithMessage("*is only available on*");
@@ -48,7 +45,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [TestCase(Browser.Chrome)]
         public void HeadlessBrowsersCanBeLaunched(Browser browser)
         {
-            Driver = this.WebDriverFactory.GetLocalWebDriver(browser, true);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(browser, true);
             Driver.Url = "https://example.com/";
             Driver.Title.Should().Be("Example Domain");
         }
@@ -59,7 +56,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [TestCase(Browser.Safari)]
         public void RequestingUnsupportedHeadlessBrowserThrowsInformativeException(Browser browser)
         {
-            Action act = () => this.WebDriverFactory.GetLocalWebDriver(browser, true);
+            Action act = () => StaticWebDriverFactory.GetLocalWebDriver(browser, true);
             act.Should()
                 .ThrowExactly<ArgumentException>($"because headless mode is not supported on {browser}.")
                 .WithMessage($"Headless mode is not currently supported for {browser}.");
@@ -68,7 +65,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [Test]
         public void HdBrowserIsOfRequestedSize()
         {
-            Driver = this.WebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Hd);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Hd);
 
             Assert.Multiple(() =>
             {
@@ -81,7 +78,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [Test]
         public void FhdBrowserIsOfRequestedSize()
         {
-            Driver = this.WebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Fhd);
+            Driver = StaticWebDriverFactory.GetLocalWebDriver(StaticDriverOptionsFactory.GetFirefoxOptions(true), WindowSize.Fhd);
 
             Assert.Multiple(() =>
             {
@@ -98,7 +95,7 @@ namespace AlexanderOnTest.WebDriverFactory.WindowsTests
         [TestCase(Browser.Chrome)]
         public void RemoteWebDriverCanBeLaunchedAndLoadExampleDotCom(Browser browser)
         {
-            Driver = this.WebDriverFactory.GetRemoteWebDriver(browser);
+            Driver = StaticWebDriverFactory.GetRemoteWebDriver(browser, new Uri("http://localhost:4444/wd/hub"), PlatformType.Any);
             Driver.Url = "https://example.com/";
             Driver.Title.Should().Be("Example Domain");
         }

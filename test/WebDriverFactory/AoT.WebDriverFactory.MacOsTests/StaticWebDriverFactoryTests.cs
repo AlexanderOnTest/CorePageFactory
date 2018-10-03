@@ -3,9 +3,8 @@ using System.Drawing;
 using FluentAssertions;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
 
-namespace AlexanderOnTest.WebDriverFactory.MacOsTests
+namespace AoT.WebDriverFactory.MacOsTests
 {
     [TestFixture]
     public class StaticWebDriverFactoryTests

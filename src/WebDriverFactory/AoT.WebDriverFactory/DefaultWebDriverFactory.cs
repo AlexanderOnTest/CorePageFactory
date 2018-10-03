@@ -8,7 +8,7 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Safari;
 
-namespace AlexanderOnTest.WebDriverFactory
+namespace AoT.WebDriverFactory
 {
     public class DefaultWebDriverFactory : IWebDriverFactory
     {
