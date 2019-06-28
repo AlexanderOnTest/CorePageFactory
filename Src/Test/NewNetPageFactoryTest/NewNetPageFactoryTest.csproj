@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="75.0.3770.90" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.24.0" />
+    <PackageReference Include="Selenium.WebDriver.IEDriver" Version="3.141.59" />
+    <PackageReference Include="Selenium.WebDriver.NetCoreWebDriverFactory" Version="3.0.0" />
+    <PackageReference Include="Selenium.WebDriver.WebDriverFactoryNunitConfig" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Main\AlexanderOnTest.NewNetPageFactory\AlexanderOnTest.NewNetPageFactory.csproj" />
+  </ItemGroup>
+
+</Project>
