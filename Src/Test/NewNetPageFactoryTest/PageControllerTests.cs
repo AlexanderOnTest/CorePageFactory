@@ -8,7 +8,7 @@ using System;
 
 namespace Tests
 {
-    public class Tests
+    public class PageControllerTests
     {
         private IServiceProvider serviceProvider;
         private IWebDriverManager driverManager;
