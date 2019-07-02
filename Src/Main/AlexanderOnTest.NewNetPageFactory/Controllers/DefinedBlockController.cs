@@ -28,6 +28,8 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         
         protected By RootElementBy { get;  }
 
+
+
         public IWebElement GetRootElement()
         {
             if (this.UseBy)

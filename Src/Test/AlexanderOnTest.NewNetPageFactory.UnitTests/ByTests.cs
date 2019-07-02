@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
+using AlexanderOnTest.NewNetPageFactory.Utilities;
 using AlexanderOnTest.WebDriverFactoryNunitConfig.TestSettings;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -17,15 +19,17 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
     [TestFixture]
     public class ByTests
     {
+        //http://book.theautomatedtester.co.uk/
         private Dictionary<string, By> cases;
         private const string CssSelector = "#q";
         private const string Id = "q";
         private const string ClassName = "mainbody";
         private const string TagName = "input";
-        private const string Name = "but2";
         private const string LinkText = "Chapter 8";
         private const string PartialLinkText = "8";
         private const string XPath = "/html/body/div[2]/ul/li[3]/a";
+        //http://book.theautomatedtester.co.uk/chapter2
+        private const string Name = "but2";
 
         private IServiceProvider serviceProvider;
         private IWebDriverManager driverManager;
@@ -35,106 +39,46 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            //IServiceCollection serviceCollection = ServiceCollectionFactory.GetDefaultServiceCollection(true, WebDriverSettings.WebDriverConfiguration);
+            IServiceCollection serviceCollection = ServiceCollectionFactory.GetDefaultServiceCollection(true, WebDriverSettings.WebDriverConfiguration);
 
-            //serviceProvider = serviceCollection.BuildServiceProvider();
-            //this.driverManager = serviceProvider.GetService<IWebDriverManager>();
+            serviceProvider = serviceCollection.BuildServiceProvider();
+            this.driverManager = serviceProvider.GetService<IWebDriverManager>();
 
-            cases = new Dictionary<string, By>();
-            cases.Add("CssSelector", By.CssSelector(CssSelector));
-            cases.Add("Id", By.Id(Id));
-            cases.Add("ClassName", By.ClassName(ClassName));
-            cases.Add("TagName", By.TagName(TagName));
-            cases.Add("Name", By.Name(Name));
-            cases.Add("LinkText", By.LinkText(LinkText));
-            cases.Add("PartialLinkText", By.PartialLinkText(PartialLinkText));
-            cases.Add("XPath", By.XPath(XPath));
+            cases = new Dictionary<string, By>
+            {
+                {"CssSelector", By.CssSelector(CssSelector)},
+                {"Id", By.Id(Id)},
+                {"ClassName", By.ClassName(ClassName)},
+                {"TagName", By.TagName(TagName)},
+                {"Name", By.Name(Name)},
+                {"LinkText", By.LinkText(LinkText)},
+                {"PartialLinkText", By.PartialLinkText(PartialLinkText)},
+                {"XPath", By.XPath(XPath)}
+            };
         }
 
-        //http://book.theautomatedtester.co.uk/
-        [TestCase("CssSelector", CssSelector)]
-        [TestCase("Id", Id)]
-        [TestCase("ClassName", ClassName)]
-        [TestCase("TagName", TagName)]
-        [TestCase("LinkText", LinkText)]
-        [TestCase("PartialLinkText", PartialLinkText)]
-        [TestCase("XPath", XPath)]
-        //http://book.theautomatedtester.co.uk/chapter2
-        [TestCase("Name", Name)]
-        //http://book.theautomatedtester.co.uk/
-        public void LocatorValuesCanBeParsed(string locatorType, string locatorValue)
+        [TestCase("CssSelector", CssSelector, true)]
+        [TestCase("Id", Id, true)]
+        [TestCase("ClassName", ClassName, true)]
+        [TestCase("TagName", TagName, true)]
+        [TestCase("LinkText", LinkText, false)]
+        [TestCase("PartialLinkText", PartialLinkText, false)]
+        [TestCase("XPath", XPath, false)]
+        [TestCase("Name", Name, true)]
+        [Category("Unit")]
+        public void LocatorDetailsAreParsedCorrectlyFromBy(string locatorType, string locatorValue, bool isAtomic)
         {
             cases.TryGetValue(locatorType, out By by);
-            string locatorDescription = (locatorType != "ClassName") ? locatorType : $"{locatorType}[Contains]";
-            using (new AssertionScope())
-            {
-                by.ToString().Should().Be($"By.{locatorDescription}: {locatorValue}");
-                GetLocatorValueByRegex(by).Should().Be(locatorValue);
-                GetLocatorValueBySubString(by).Should().Be(locatorValue);
 
-                GetLocatorTypeByRegex(by).Should().Be(locatorType);
-                GetLocatorTypeBySubString(by).Should().Be(locatorType);
-            }
-        }
-
-        //http://book.theautomatedtester.co.uk/
-        [TestCase("CssSelector", CssSelector)]
-        [TestCase("Id", Id)]
-        [TestCase("ClassName", ClassName)]
-        [TestCase("TagName", TagName)]
-        [TestCase("LinkText", LinkText)]
-        [TestCase("PartialLinkText", PartialLinkText)]
-        [TestCase("XPath", XPath)]
-        //http://book.theautomatedtester.co.uk/chapter2
-        [TestCase("Name", Name)]
-        //http://book.theautomatedtester.co.uk/
-        public void LocatorValuesCanBeParsedInOne(string locatorType, string locatorValue)
-        {
-            cases.TryGetValue(locatorType, out By by);
-            using (new AssertionScope())
-            {
-                (string locatorType, string locatorValue) byDetails = GetLocatorDetails(by);
-
-                byDetails.locatorValue.Should().Be(locatorValue);
-                byDetails.locatorType.Should().Be(locatorType);
-            }
+            by.GetLocatorDetails()
+                .Should()
+                .BeEquivalentTo((locatorType, locatorValue, isAtomic));
         }
 
         [TearDown]
         public void TearDown()
         {
-            //this.driverManager?.Quit();
+            this.driverManager?.Quit();
         }
-
-        private string GetLocatorValueByRegex(By by)
-        {
-            return Regex.Match(by.ToString(), "[^ ]* (.*)").Groups[1].Value;
-        }
-
-        private string GetLocatorValueBySubString(By by)
-        {
-            string toString = by.ToString();
-            return toString.Substring(toString.IndexOf(' ') + 1); ;
-        }
-
-        private string GetLocatorTypeByRegex(By by)
-        {
-            return Regex.Match(by.ToString(), "[^By.][A-Z][^:]").Groups[1].Value;
-        }
-
-        private string GetLocatorTypeBySubString(By by)
-        {
-            string toString = by.ToString();
-            return toString.Substring(3, toString.IndexOf(':') - 3)
-                .Replace("[Contains]", string.Empty); 
-        }
-
-        private (string locatorType, string locatorValue) GetLocatorDetails(By by)
-        {
-            string toString = by.ToString();
-            string cleanToString = toString.Replace("[Contains]", string.Empty);
-            var tokens = cleanToString.Split(": ");
-            return (tokens[0].Substring(3), tokens[1]);
-        } 
     }
 }
