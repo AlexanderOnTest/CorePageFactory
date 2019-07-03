@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AlexanderOnTest.NewNetPageFactory.Utilities;
 
 namespace AlexanderOnTest.NewNetPageFactory.Controllers
 {
@@ -17,9 +18,16 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
 
         protected DefinedBlockController(By rootElementBy)
         {
+            var byDetails = rootElementBy.GetLocatorDetails();
+            if (byDetails.isAtomic)
+            {
 
-            this.UseBy = true;
-            this.RootElementBy = rootElementBy;
+            }
+            else
+            {
+                this.UseBy = true;
+                this.RootElementBy = rootElementBy;
+            }
         }
 
         protected IWebDriver Driver { get; } 

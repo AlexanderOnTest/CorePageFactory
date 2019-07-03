@@ -75,6 +75,32 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 .BeEquivalentTo((locatorType, locatorValue, isAtomic));
         }
 
+        [TestCase("CssSelector", CssSelector, CssSelector)]
+        [TestCase("Id", Id, CssSelector)]
+        [TestCase("ClassName", ClassName, ".mainbody")]
+        [TestCase("TagName", TagName, TagName)]
+        [TestCase("Name", Name, "*[name=\"but2\"]")]
+        public void CanCorrectlyConvertToCssSelector(string locatorType, string locatorValue, string expectedCssSelector)
+        {
+            cases.TryGetValue(locatorType, out By by);
+
+            ByExtensions.GetAtomicCssLocator(by.GetLocatorDetails()).Should().Be(expectedCssSelector);
+        }
+
+
+        [TestCase("LinkText")]
+        [TestCase("PartialLinkText")]
+        [TestCase("XPath")]
+        public void SelectorConverterThrowsForIncorrectLocatorType(string locatorType)
+        {
+
+            cases.TryGetValue(locatorType, out By by);
+
+            Action conversion = () => ByExtensions.GetAtomicCssLocator(by.GetLocatorDetails());
+            conversion.Should().ThrowExactly<ArgumentException>()
+                .WithMessage($"'By's of type {locatorType} cannot be converted to use a CssSelector.");
+        }
+
         [TearDown]
         public void TearDown()
         {
