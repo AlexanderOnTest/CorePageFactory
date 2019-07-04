@@ -1,14 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
 using AlexanderOnTest.NewNetPageFactory.Utilities;
 using AlexanderOnTest.WebDriverFactoryNunitConfig.TestSettings;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -20,7 +16,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
     public class ByTests
     {
         //http://book.theautomatedtester.co.uk/
-        private Dictionary<string, By> cases;
+        private Dictionary<LocatorType, By> cases;
         private const string CssSelector = "#q";
         private const string Id = "q";
         private const string ClassName = "mainbody";
@@ -44,59 +40,72 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             serviceProvider = serviceCollection.BuildServiceProvider();
             this.driverManager = serviceProvider.GetService<IWebDriverManager>();
 
-            cases = new Dictionary<string, By>
+            cases = new Dictionary<LocatorType, By>
             {
-                {"CssSelector", By.CssSelector(CssSelector)},
-                {"Id", By.Id(Id)},
-                {"ClassName", By.ClassName(ClassName)},
-                {"TagName", By.TagName(TagName)},
-                {"Name", By.Name(Name)},
-                {"LinkText", By.LinkText(LinkText)},
-                {"PartialLinkText", By.PartialLinkText(PartialLinkText)},
-                {"XPath", By.XPath(XPath)}
+                {LocatorType.CssSelector, By.CssSelector(CssSelector)},
+                {LocatorType.Id, By.Id(Id)},
+                {LocatorType.ClassName, By.ClassName(ClassName)},
+                {LocatorType.TagName, By.TagName(TagName)},
+                {LocatorType.Name, By.Name(Name)},
+                {LocatorType.LinkText, By.LinkText(LinkText)},
+                {LocatorType.PartialLinkText, By.PartialLinkText(PartialLinkText)},
+                {LocatorType.XPath, By.XPath(XPath)}
             };
         }
 
-        [TestCase("CssSelector", CssSelector, true)]
-        [TestCase("Id", Id, true)]
-        [TestCase("ClassName", ClassName, true)]
-        [TestCase("TagName", TagName, true)]
-        [TestCase("LinkText", LinkText, false)]
-        [TestCase("PartialLinkText", PartialLinkText, false)]
-        [TestCase("XPath", XPath, false)]
-        [TestCase("Name", Name, true)]
+        [TestCase(LocatorType.CssSelector, true)]
+        [TestCase(LocatorType.Id, true)]
+        [TestCase(LocatorType.ClassName, true)]
+        [TestCase(LocatorType.TagName, true)]
+        [TestCase(LocatorType.LinkText, false)]
+        [TestCase(LocatorType.PartialLinkText, false)]
+        [TestCase(LocatorType.XPath, false)]
+        [TestCase(LocatorType.Name, true)]
         [Category("Unit")]
-        public void LocatorDetailsAreParsedCorrectlyFromBy(string locatorType, string locatorValue, bool isAtomic)
+        public void LocatorTypeCorrectlyIdentifiesConvertibility(LocatorType locatorType, bool isSubAtomic)
+        {
+            locatorType.IsSubAtomic().Should().Be(isSubAtomic);
+        }
+
+        [TestCase(LocatorType.CssSelector, CssSelector)]
+        [TestCase(LocatorType.Id, Id)]
+        [TestCase(LocatorType.ClassName, ClassName)]
+        [TestCase(LocatorType.TagName, TagName)]
+        [TestCase(LocatorType.LinkText, LinkText)]
+        [TestCase(LocatorType.PartialLinkText, PartialLinkText)]
+        [TestCase(LocatorType.XPath, XPath)]
+        [TestCase(LocatorType.Name, Name)]
+        [Category("Unit")]
+        public void LocatorDetailsAreParsedCorrectlyFromBy(LocatorType locatorType, string locatorValue)
         {
             cases.TryGetValue(locatorType, out By by);
 
-            by.GetLocatorDetails()
+            by.GetLocatorDetail()
                 .Should()
-                .BeEquivalentTo((locatorType, locatorValue, isAtomic));
+                .BeEquivalentTo((locatorType, locatorValue));
         }
 
-        [TestCase("CssSelector", CssSelector, CssSelector)]
-        [TestCase("Id", Id, CssSelector)]
-        [TestCase("ClassName", ClassName, ".mainbody")]
-        [TestCase("TagName", TagName, TagName)]
-        [TestCase("Name", Name, "*[name=\"but2\"]")]
-        public void CanCorrectlyConvertToCssSelector(string locatorType, string locatorValue, string expectedCssSelector)
+        [TestCase(LocatorType.CssSelector, CssSelector, CssSelector)]
+        [TestCase(LocatorType.Id, Id, CssSelector)]
+        [TestCase(LocatorType.ClassName, ClassName, ".mainbody")]
+        [TestCase(LocatorType.TagName, TagName, TagName)]
+        [TestCase(LocatorType.Name, Name, "*[name=\"but2\"]")]
+        public void SelectorConverterCanCorrectlyConvertToCssSelector(LocatorType locatorType, string locatorValue, string expectedCssSelector)
         {
             cases.TryGetValue(locatorType, out By by);
 
-            ByExtensions.GetAtomicCssLocator(by.GetLocatorDetails()).Should().Be(expectedCssSelector);
+            ByExtensions.GetEquivalentCssLocator(by.GetLocatorDetail()).Should().Be(expectedCssSelector);
         }
 
-
-        [TestCase("LinkText")]
-        [TestCase("PartialLinkText")]
-        [TestCase("XPath")]
-        public void SelectorConverterThrowsForIncorrectLocatorType(string locatorType)
+        [TestCase(LocatorType.LinkText)]
+        [TestCase(LocatorType.PartialLinkText)]
+        [TestCase(LocatorType.XPath)]
+        public void SelectorConverterThrowsForIncorrectLocatorType(LocatorType locatorType)
         {
 
             cases.TryGetValue(locatorType, out By by);
 
-            Action conversion = () => ByExtensions.GetAtomicCssLocator(by.GetLocatorDetails());
+            Action conversion = () => ByExtensions.GetEquivalentCssLocator(by.GetLocatorDetail());
             conversion.Should().ThrowExactly<ArgumentException>()
                 .WithMessage($"'By's of type {locatorType} cannot be converted to use a CssSelector.");
         }

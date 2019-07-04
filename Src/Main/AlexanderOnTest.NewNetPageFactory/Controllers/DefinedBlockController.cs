@@ -1,7 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using AlexanderOnTest.NewNetPageFactory.Utilities;
 
 namespace AlexanderOnTest.NewNetPageFactory.Controllers
@@ -18,10 +16,13 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
 
         protected DefinedBlockController(By rootElementBy)
         {
-            var byDetails = rootElementBy.GetLocatorDetails();
-            if (byDetails.isAtomic)
+            (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
+            Func<string, string> conversionFunc = locatorType.ConvertToCssSelectorFunc();
+            if (conversionFunc != null)
             {
-
+                this.UseBy = false;
+                this.RootElementCssSelector = conversionFunc(locatorValue);
+                this.RootElementBy = By.CssSelector(RootElementCssSelector);
             }
             else
             {
@@ -36,19 +37,9 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         
         protected By RootElementBy { get;  }
 
-
-
         public IWebElement GetRootElement()
         {
-            if (this.UseBy)
-            {
-                return Driver.FindElement(RootElementBy);
-            }
-            else
-            {
-                return Driver.FindElement(By.CssSelector(RootElementCssSelector));
-            }
-
+            return Driver.FindElement(RootElementBy);
         }
     }
 }
