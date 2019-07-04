@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System;
-using AlexanderOnTest.NewNetPageFactory.Utilities;
 
 namespace AlexanderOnTest.NewNetPageFactory.Controllers
 {

@@ -1,21 +1,10 @@
 ﻿using System;
-using AlexanderOnTest.NewNetPageFactory.Utilities;
 using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory
 {
     public class ByData
     {
-        public By By { get; }
-
-        public LocatorType LocatorType { get; }
-
-        public string OriginalLocator { get; }
-
-        public bool IsSubAtomic { get; }
-
-        public string CssLocator { get; }
-
         public ByData(By by)
         {
             By = by;
@@ -26,5 +15,15 @@ namespace AlexanderOnTest.NewNetPageFactory
             IsSubAtomic = converterFunc != null;
             CssLocator = IsSubAtomic ? converterFunc(OriginalLocator) : null;
         }
+
+        public By By { get; }
+
+        public LocatorType LocatorType { get; }
+
+        public string OriginalLocator { get; }
+
+        public bool IsSubAtomic { get; }
+
+        public string CssLocator { get; }
     }
 }

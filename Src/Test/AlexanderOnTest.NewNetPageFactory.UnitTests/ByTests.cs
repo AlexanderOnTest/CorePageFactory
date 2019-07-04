@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.NewNetPageFactory.Utilities;
 using AlexanderOnTest.WebDriverFactoryNunitConfig.TestSettings;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -102,12 +102,40 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         [TestCase(LocatorType.XPath)]
         public void SelectorConverterThrowsForIncorrectLocatorType(LocatorType locatorType)
         {
-
             cases.TryGetValue(locatorType, out By by);
 
             Action conversion = () => ByExtensions.GetEquivalentCssLocator(by.GetLocatorDetail());
             conversion.Should().ThrowExactly<ArgumentException>()
                 .WithMessage($"'By's of type {locatorType} cannot be converted to use a CssSelector.");
+        }
+
+        [TestCase(LocatorType.CssSelector, CssSelector, CssSelector, true)]
+        [TestCase(LocatorType.Id, Id, CssSelector, true)]
+        [TestCase(LocatorType.ClassName, ClassName, ".mainbody", true)]
+        [TestCase(LocatorType.TagName, TagName, TagName, true)]
+        [TestCase(LocatorType.Name, Name, "*[name=\"but2\"]", true)]
+        [TestCase(LocatorType.LinkText, LinkText, null, false)]
+        [TestCase(LocatorType.PartialLinkText, PartialLinkText, null, false)]
+        [TestCase(LocatorType.XPath, XPath, null, false)]
+        public void ByDataObjectHasCorrectValues(
+            LocatorType locatorType, 
+            string providedLocator, 
+            string expectedCssSelector,
+            bool expectedIsSubAtomic)
+        {
+            cases.TryGetValue(locatorType, out By by);
+
+            ByData byData = new ByData(by);
+
+            using (new AssertionScope())
+            {
+                byData.By.Should().BeEquivalentTo(by);
+                byData.LocatorType.Should().Be(locatorType);
+                byData.OriginalLocator.Should().Be(providedLocator);
+                byData.IsSubAtomic.Should().Be(expectedIsSubAtomic);
+                byData.CssLocator.Should().Be(expectedCssSelector);
+            }
+
         }
 
         [TearDown]
