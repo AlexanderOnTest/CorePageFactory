@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks;
-using AlexanderOnTest.WebDriverFactoryNunitConfig.TestSettings;
 using FakeItEasy;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
@@ -15,7 +12,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
     [TestFixture]
     public class DefinedBlockTests
     {
-        static object[] SubAtomicByCases =
+        static readonly object[] SubAtomicByCases =
         {
             new object[] { LocatorType.CssSelector, true },
             new object[] { LocatorType.Id, true },
@@ -28,7 +25,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             new object[] { LocatorType.String, true },
         };
 
-        static object[] NonAtomicByCases =
+        static readonly object[] NonAtomicByCases =
         {
             new object[] { LocatorType.CssSelector, false },
             new object[] { LocatorType.Id, false },
@@ -52,8 +49,6 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
          [OneTimeSetUp]
         public void Setup()
         {
-            IServiceCollection serviceCollection = ServiceCollectionFactory.GetDefaultServiceCollection(true, WebDriverSettings.WebDriverConfiguration);
-
             this.driver = A.Fake<IWebDriver>();
 
             this.elementReturnedByDriver = A.Fake<IWebElement>();
