@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
-using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.WebDriverFactoryNunitConfig.TestSettings;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
@@ -27,19 +23,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         //http://book.theautomatedtester.co.uk/chapter2
         private const string Name = "but2";
 
-        private IServiceProvider serviceProvider;
-        private IWebDriverManager driverManager;
-        private IWebDriver driver;
-
-
         [OneTimeSetUp]
         public void Setup()
         {
-            IServiceCollection serviceCollection = ServiceCollectionFactory.GetDefaultServiceCollection(true, WebDriverSettings.WebDriverConfiguration);
-
-            serviceProvider = serviceCollection.BuildServiceProvider();
-            this.driverManager = serviceProvider.GetService<IWebDriverManager>();
-
             cases = new Dictionary<LocatorType, By>
             {
                 {LocatorType.CssSelector, By.CssSelector(CssSelector)},
@@ -136,12 +122,6 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 byData.CssLocator.Should().Be(expectedCssSelector);
             }
 
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.driverManager?.Quit();
         }
     }
 }

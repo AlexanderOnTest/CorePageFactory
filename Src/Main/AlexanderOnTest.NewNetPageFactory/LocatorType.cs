@@ -12,7 +12,8 @@ namespace AlexanderOnTest.NewNetPageFactory
         Id,
         XPath,
         LinkText,
-        PartialLinkText
+        PartialLinkText,
+        String
     }
 
     /// <summary>
@@ -33,6 +34,7 @@ namespace AlexanderOnTest.NewNetPageFactory
             LocatorConversionFunctions.Add(LocatorType.XPath, null);
             LocatorConversionFunctions.Add(LocatorType.LinkText, null);
             LocatorConversionFunctions.Add(LocatorType.PartialLinkText, null);
+            LocatorConversionFunctions.Add(LocatorType.String, (sel => sel));
         }
 
         /// <summary>

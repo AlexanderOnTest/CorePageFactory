@@ -25,6 +25,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             new object[] { LocatorType.LinkText, false },
             new object[] { LocatorType.PartialLinkText, false },
             new object[] { LocatorType.XPath, false },
+            new object[] { LocatorType.String, true },
         };
 
         static object[] NonAtomicByCases =
@@ -37,6 +38,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             new object[] { LocatorType.LinkText, false },
             new object[] { LocatorType.PartialLinkText, false },
             new object[] { LocatorType.XPath, false },
+            new object[] { LocatorType.String, false },
         };
 
         private Dictionary<LocatorType, By> byLookup;
@@ -53,15 +55,14 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             IServiceCollection serviceCollection = ServiceCollectionFactory.GetDefaultServiceCollection(true, WebDriverSettings.WebDriverConfiguration);
 
             this.driver = A.Fake<IWebDriver>();
-            IWebElement fakeElement = A.Fake<IWebElement>();
 
             this.elementReturnedByDriver = A.Fake<IWebElement>();
             this.elementReturnedByFoundElement = A.Fake<IWebElement>();
             A.CallTo(this.driver).WithReturnType<IWebElement>().Returns(elementReturnedByDriver);
             A.CallTo(elementReturnedByDriver).WithReturnType<IWebElement>().Returns(elementReturnedByFoundElement);
 
-            A.CallTo(() => elementReturnedByDriver.Text).Returns(AtomicMessage);
-            A.CallTo(() => elementReturnedByFoundElement.Text).Returns(ChainedMessage);
+            A.CallTo(() => this.elementReturnedByDriver.Text).Returns(AtomicMessage);
+            A.CallTo(() => this.elementReturnedByFoundElement.Text).Returns(ChainedMessage);
 
             this.byLookup = new Dictionary<LocatorType, By>
             {
@@ -72,7 +73,8 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 {LocatorType.Name, By.Name("Name")},
                 {LocatorType.LinkText, By.LinkText("LinkText")},
                 {LocatorType.PartialLinkText, By.PartialLinkText("PartialLinkText")},
-                {LocatorType.XPath, By.XPath("XPath")}
+                {LocatorType.XPath, By.XPath("XPath")},
+                {LocatorType.String, null}
             };
         }
 
@@ -185,7 +187,11 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         private DefinedBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
         {
             this.byLookup.TryGetValue(rootLocatorType, out By by);
-            return new DefinedBlock(by, driver);
+            if (by != null)
+            {
+                return new DefinedBlock(by, driver);
+            } else
+                return new DefinedBlock("css", driver);
         }
 
         private void AssertCorrectTypeOfCallWasMade(IWebElement element, bool expectedAtomicCall)

@@ -22,6 +22,8 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
             this.preferAtomic = base.preferAtomic;
         }
 
+        public IWebElement StringElement() => this.FindElement("css");
+
         public IWebElement CssSelectorElement() => this.FindElement(By.CssSelector("css"));
 
         public IWebElement ClassNameElement() => this.FindElement(By.ClassName("class"));
