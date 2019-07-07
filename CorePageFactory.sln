@@ -9,11 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{221BC348-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageFactory", "Src\Main\AlexanderOnTest.NewNetPageFactory\AlexanderOnTest.NewNetPageFactory.csproj", "{E68B548A-18EC-4FF0-8C7C-871043FB80B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDriverTest", "Src\Test\EdgeDriverTest\EdgeDriverTest.csproj", "{EBC5A25A-641B-4E34-B216-CDD839E063F3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewNetPageFactoryTest", "Src\Test\NewNetPageFactoryTest\NewNetPageFactoryTest.csproj", "{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlexanderOnTest.NewNetPageFactory.UnitTests", "Src\Test\AlexanderOnTest.NewNetPageFactory.UnitTests\AlexanderOnTest.NewNetPageFactory.UnitTests.csproj", "{342BA222-95AD-4A70-A73B-28874F02AD1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageFactory.UnitTests", "Src\Test\AlexanderOnTest.NewNetPageFactory.UnitTests\AlexanderOnTest.NewNetPageFactory.UnitTests.csproj", "{342BA222-95AD-4A70-A73B-28874F02AD1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +21,6 @@ Global
 		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBC5A25A-641B-4E34-B216-CDD839E063F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBC5A25A-641B-4E34-B216-CDD839E063F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBC5A25A-641B-4E34-B216-CDD839E063F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBC5A25A-641B-4E34-B216-CDD839E063F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,8 +31,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E68B548A-18EC-4FF0-8C7C-871043FB80B5} = {80B361D4-6A77-480E-AC00-94815441C400}
-		{EBC5A25A-641B-4E34-B216-CDD839E063F3} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
-		{B2D9A049-CC95-4D36-8DC7-87C3DA45B0D8} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
 		{342BA222-95AD-4A70-A73B-28874F02AD1F} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

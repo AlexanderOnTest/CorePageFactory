@@ -20,22 +20,19 @@ namespace AlexanderOnTest.NewNetPageFactory
     /// </summary>
     public static class LocatorTypeExtension
     {
-        private static readonly Dictionary<LocatorType, (bool isConvertible, Func<string, string> locatorConversionFunc)> LocatorConvertibilityDetails 
-            = new Dictionary<LocatorType, (bool isConvertible, Func<string, string> locatorConversionFunc)>();
-
-        private static readonly Dictionary<LocatorType, Func<string, string>> LocatorConversionFuncs
+        private static readonly Dictionary<LocatorType, Func<string, string>> LocatorConversionFunctions
             = new Dictionary<LocatorType, Func<string, string>>();
 
         static LocatorTypeExtension()
         {
-            LocatorConversionFuncs.Add(LocatorType.CssSelector, (sel => sel));
-            LocatorConversionFuncs.Add(LocatorType.TagName, (sel => sel));
-            LocatorConversionFuncs.Add(LocatorType.ClassName, (sel => $".{sel}"));
-            LocatorConversionFuncs.Add(LocatorType.Name, (sel => $"*[name=\"{sel}\"]"));
-            LocatorConversionFuncs.Add(LocatorType.Id, (sel => $"#{sel}"));
-            LocatorConversionFuncs.Add(LocatorType.XPath, (null));
-            LocatorConversionFuncs.Add(LocatorType.LinkText, (null));
-            LocatorConversionFuncs.Add(LocatorType.PartialLinkText, (null));
+            LocatorConversionFunctions.Add(LocatorType.CssSelector, (sel => sel));
+            LocatorConversionFunctions.Add(LocatorType.TagName, (sel => sel));
+            LocatorConversionFunctions.Add(LocatorType.ClassName, (sel => $".{sel}"));
+            LocatorConversionFunctions.Add(LocatorType.Name, (sel => $"*[name=\"{sel}\"]"));
+            LocatorConversionFunctions.Add(LocatorType.Id, (sel => $"#{sel}"));
+            LocatorConversionFunctions.Add(LocatorType.XPath, null);
+            LocatorConversionFunctions.Add(LocatorType.LinkText, null);
+            LocatorConversionFunctions.Add(LocatorType.PartialLinkText, null);
         }
 
         /// <summary>
@@ -46,7 +43,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         public static Func<string, string> ConvertToCssSelectorFunc(this LocatorType locatorType)
         {
 
-            LocatorConversionFuncs.TryGetValue(locatorType, out Func<string, string> locatorConversionFunc);
+            LocatorConversionFunctions.TryGetValue(locatorType, out Func<string, string> locatorConversionFunc);
             return locatorConversionFunc;
         }
 

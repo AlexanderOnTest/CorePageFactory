@@ -5,27 +5,29 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
 {
     public abstract class DefinedBlockController
     {
-        private readonly bool UseBy;
+        protected readonly bool preferAtomic;
 
-        protected DefinedBlockController(string rootElementCssSelector)
+        protected DefinedBlockController(string rootElementCssSelector, IWebDriver driver)
         {
-            this.UseBy = false;
+            Driver = driver;
+            this.preferAtomic = true;
             this.RootElementCssSelector = rootElementCssSelector;
         }
 
-        protected DefinedBlockController(By rootElementBy)
+        protected DefinedBlockController(By rootElementBy, IWebDriver driver)
         {
+            Driver = driver;
             (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
             Func<string, string> conversionFunc = locatorType.ConvertToCssSelectorFunc();
             if (conversionFunc != null)
             {
-                this.UseBy = false;
+                this.preferAtomic = true;
                 this.RootElementCssSelector = conversionFunc(locatorValue);
                 this.RootElementBy = By.CssSelector(RootElementCssSelector);
             }
             else
             {
-                this.UseBy = true;
+                this.preferAtomic = false;
                 this.RootElementBy = rootElementBy;
             }
         }
@@ -39,6 +41,21 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         public IWebElement GetRootElement()
         {
             return Driver.FindElement(RootElementBy);
+        }
+
+        protected IWebElement FindElement(string relativeCssSelector)
+        {
+            return (preferAtomic)
+                ? Driver.FindElement(By.CssSelector($"{RootElementCssSelector} {relativeCssSelector}")) 
+                : Driver.FindElement(RootElementBy).FindElement(By.CssSelector(relativeCssSelector));
+        }
+
+        protected IWebElement FindElement(By relativeBy)
+        {
+            var relativeByData = new ByData(relativeBy);
+            return (preferAtomic && relativeByData.IsSubAtomic)
+                ? Driver.FindElement(By.CssSelector($"{RootElementCssSelector} {relativeByData.CssLocator}"))
+                : Driver.FindElement(RootElementBy).FindElement(relativeBy);
         }
     }
 }
