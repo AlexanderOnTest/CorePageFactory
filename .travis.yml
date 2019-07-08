@@ -1,3 +1,4 @@
+dist: xenial
 language: csharp
 solution: CorePageFactory.sln
 mono: none
