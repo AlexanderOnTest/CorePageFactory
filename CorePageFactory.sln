@@ -1,23 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDriverFactory", "WebDriverFactory", "{178E49E3-799F-4FF1-A3B2-154DB4551E00}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{80B361D4-6A77-480E-AC00-94815441C400}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{30D9B787-E07B-4FAA-8F50-87A5E4A18DE3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{221BC348-ED8D-4B9E-A005-C91E93C0BE0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AoT.WebDriverFactory", "src\WebDriverFactory\AoT.WebDriverFactory\AoT.WebDriverFactory.csproj", "{4A6FF976-F25E-420D-A238-6BAB8CC860A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageFactory", "Src\Main\AlexanderOnTest.NewNetPageFactory\AlexanderOnTest.NewNetPageFactory.csproj", "{E68B548A-18EC-4FF0-8C7C-871043FB80B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AoT.WebDriverFactory.WindowsTests", "test\WebDriverFactory\AoT.WebDriverFactory.WindowsTests\AoT.WebDriverFactory.WindowsTests.csproj", "{4688105F-54C7-42FA-8218-D36BEB35DFDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageFactory.UnitTests", "Src\Test\AlexanderOnTest.NewNetPageFactory.UnitTests\AlexanderOnTest.NewNetPageFactory.UnitTests.csproj", "{342BA222-95AD-4A70-A73B-28874F02AD1F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebDriverFactory", "WebDriverFactory", "{B41D6301-B590-4AF9-A93F-3CC9DAF65B90}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{567247CB-5AAB-4638-A4B3-DEDC66B6EC7F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AoT.WebDriverFactory.MacOsTests", "test\WebDriverFactory\AoT.WebDriverFactory.MacOsTests\AoT.WebDriverFactory.MacOsTests.csproj", "{5723B399-BD1B-45BE-9562-9A9E5D63FE23}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AoT.WebDriverFactory.LinuxTests", "test\WebDriverFactory\AoT.WebDriverFactory.LinuxTests\AoT.WebDriverFactory.LinuxTests.csproj", "{0BB2A572-E7F1-4533-9E24-FE4C73B03242}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D9AC2B7-DDBE-4267-A935-11AC96AC74F5}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,33 +22,21 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A6FF976-F25E-420D-A238-6BAB8CC860A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A6FF976-F25E-420D-A238-6BAB8CC860A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A6FF976-F25E-420D-A238-6BAB8CC860A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A6FF976-F25E-420D-A238-6BAB8CC860A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4688105F-54C7-42FA-8218-D36BEB35DFDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4688105F-54C7-42FA-8218-D36BEB35DFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4688105F-54C7-42FA-8218-D36BEB35DFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4688105F-54C7-42FA-8218-D36BEB35DFDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5723B399-BD1B-45BE-9562-9A9E5D63FE23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5723B399-BD1B-45BE-9562-9A9E5D63FE23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5723B399-BD1B-45BE-9562-9A9E5D63FE23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5723B399-BD1B-45BE-9562-9A9E5D63FE23}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0BB2A572-E7F1-4533-9E24-FE4C73B03242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0BB2A572-E7F1-4533-9E24-FE4C73B03242}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0BB2A572-E7F1-4533-9E24-FE4C73B03242}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0BB2A572-E7F1-4533-9E24-FE4C73B03242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E68B548A-18EC-4FF0-8C7C-871043FB80B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{178E49E3-799F-4FF1-A3B2-154DB4551E00} = {567247CB-5AAB-4638-A4B3-DEDC66B6EC7F}
-		{4A6FF976-F25E-420D-A238-6BAB8CC860A5} = {178E49E3-799F-4FF1-A3B2-154DB4551E00}
-		{4688105F-54C7-42FA-8218-D36BEB35DFDD} = {B41D6301-B590-4AF9-A93F-3CC9DAF65B90}
-		{B41D6301-B590-4AF9-A93F-3CC9DAF65B90} = {30D9B787-E07B-4FAA-8F50-87A5E4A18DE3}
-		{5723B399-BD1B-45BE-9562-9A9E5D63FE23} = {B41D6301-B590-4AF9-A93F-3CC9DAF65B90}
-		{0BB2A572-E7F1-4533-9E24-FE4C73B03242} = {B41D6301-B590-4AF9-A93F-3CC9DAF65B90}
+		{E68B548A-18EC-4FF0-8C7C-871043FB80B5} = {80B361D4-6A77-480E-AC00-94815441C400}
+		{342BA222-95AD-4A70-A73B-28874F02AD1F} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {064D603D-68B4-4F0E-A629-21262CC85724}

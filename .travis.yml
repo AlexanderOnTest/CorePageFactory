@@ -1,10 +1,12 @@
+dist: xenial
 language: csharp
 solution: CorePageFactory.sln
 mono: none
-dotnet: 2.1
+dotnet: 2.2
 addons:
   sonarcloud:
     organization: "alexanderontesting-github"
 script:
  - dotnet build
+ - dotnet test --no-build --filter=TestCategory=Unit
  - sonar-scanner
