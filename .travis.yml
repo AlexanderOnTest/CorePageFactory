@@ -8,4 +8,5 @@ addons:
     organization: "alexanderontesting-github"
 script:
  - dotnet build
+ - dotnet test --no-build --filter=TestCategory=Unit
  - sonar-scanner
