@@ -11,6 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlexanderOnTest.NewNetPageFactory.UnitTests", "Src\Test\AlexanderOnTest.NewNetPageFactory.UnitTests\AlexanderOnTest.NewNetPageFactory.UnitTests.csproj", "{342BA222-95AD-4A70-A73B-28874F02AD1F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D9AC2B7-DDBE-4267-A935-11AC96AC74F5}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
