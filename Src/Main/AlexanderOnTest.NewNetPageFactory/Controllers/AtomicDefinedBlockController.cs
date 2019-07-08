@@ -1,20 +1,21 @@
 ﻿using OpenQA.Selenium;
 using System;
+using System.Threading.Tasks;
 
 namespace AlexanderOnTest.NewNetPageFactory.Controllers
 {
-    public abstract class DefinedBlockController
+    public abstract class AtomicDefinedBlockController
     {
         protected readonly bool preferAtomic;
 
-        protected DefinedBlockController(string rootElementCssSelector, IWebDriver driver)
+        protected AtomicDefinedBlockController(string rootElementCssSelector, IWebDriver driver)
         {
             Driver = driver;
             this.preferAtomic = true;
             this.RootElementCssSelector = rootElementCssSelector;
         }
 
-        protected DefinedBlockController(By rootElementBy, IWebDriver driver)
+        protected AtomicDefinedBlockController(By rootElementBy, IWebDriver driver)
         {
             Driver = driver;
             (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
@@ -38,7 +39,7 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         
         protected By RootElementBy { get;  }
 
-        public IWebElement GetRootElement()
+        public async Task<IWebElement> GetRootElement()
         {
             return Driver.FindElement(RootElementBy);
         }

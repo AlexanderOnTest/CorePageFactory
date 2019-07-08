@@ -8,16 +8,16 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
-    class DefinedBlock : DefinedBlockController
+    class AtomicDefinedBlock : AtomicDefinedBlockController
     {
         internal new bool preferAtomic;
 
-        public DefinedBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
+        public AtomicDefinedBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
         {
             this.preferAtomic = base.preferAtomic;
         }
 
-        public DefinedBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
+        public AtomicDefinedBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
         {
             this.preferAtomic = base.preferAtomic;
         }

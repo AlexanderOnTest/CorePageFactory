@@ -77,7 +77,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         [Category("Unit")]
         public void DefinedBlockFromString_PreferAtomicValueIsCorrect()
         {
-            DefinedBlock block = new DefinedBlock("cssSelector", driver);
+            AtomicDefinedBlock block = new AtomicDefinedBlock("cssSelector", driver);
 
             (block.preferAtomic).Should().Be(true);
         }
@@ -86,7 +86,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         [Category("Unit")]
         public void DefinedBlockFromBy_PreferAtomicValueIsCorrect(LocatorType rootLocatorType, bool expectedPreferAtomic)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
             (block.preferAtomic).Should().Be(expectedPreferAtomic);
         }
@@ -97,7 +97,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType, 
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.CssSelectorElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -108,7 +108,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.NameElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -119,7 +119,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.TagNameElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -130,7 +130,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.ClassNameElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -141,7 +141,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.IdElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -152,7 +152,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.XPathElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -163,7 +163,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.LinkTextElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
@@ -174,19 +174,19 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             LocatorType rootLocatorType,
             bool expectedAtomicCall)
         {
-            DefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
             IWebElement element = block.PartialLinkTextElement();
             AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
         }
 
-        private DefinedBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
+        private AtomicDefinedBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
         {
             this.byLookup.TryGetValue(rootLocatorType, out By by);
             if (by != null)
             {
-                return new DefinedBlock(by, driver);
+                return new AtomicDefinedBlock(by, driver);
             } else
-                return new DefinedBlock("css", driver);
+                return new AtomicDefinedBlock("css", driver);
         }
 
         private void AssertCorrectTypeOfCallWasMade(IWebElement element, bool expectedAtomicCall)
