@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks;
 using FakeItEasy;
 using FluentAssertions;
@@ -39,6 +41,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         };
 
         private Dictionary<LocatorType, By> byLookup;
+        private Dictionary<LocatorType, Func<AtomicDefinedBlock, IWebElement>> findMethodLookup;
 
         private IWebDriver driver;
         private IWebElement elementReturnedByDriver;
@@ -71,7 +74,23 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 {LocatorType.XPath, By.XPath("XPath")},
                 {LocatorType.String, null}
             };
+
+
+            this.findMethodLookup = new Dictionary<LocatorType, Func<AtomicDefinedBlock, IWebElement >>
+            {
+                {LocatorType.CssSelector, (definedBlock) => definedBlock.CssSelectorElement()},
+                {LocatorType.Id, (definedBlock) => definedBlock.IdElement()},
+                {LocatorType.ClassName, (definedBlock) => definedBlock.ClassNameElement()},
+                {LocatorType.TagName, (definedBlock) => definedBlock.TagNameElement()},
+                {LocatorType.Name, (definedBlock) => definedBlock.NameElement()},
+                {LocatorType.LinkText, (definedBlock) => definedBlock.LinkTextElement()},
+                {LocatorType.PartialLinkText, (definedBlock) => definedBlock.PartialLinkTextElement()},
+                {LocatorType.XPath, (definedBlock) => definedBlock.XPathElement()},
+                {LocatorType.String, (definedBlock) => definedBlock.StringElement()}
+            };
         }
+
+        #region ConstructorTests
 
         [Test]
         [Category("Unit")]
@@ -79,7 +98,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         {
             AtomicDefinedBlock block = new AtomicDefinedBlock("cssSelector", driver);
 
-            (block.preferAtomic).Should().Be(true);
+            (block.PreferAtomic).Should().Be(true);
         }
 
         [TestCaseSource("SubAtomicByCases")]
@@ -88,95 +107,107 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         {
             AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
-            (block.preferAtomic).Should().Be(expectedPreferAtomic);
+            (block.PreferAtomic).Should().Be(expectedPreferAtomic);
         }
 
-        [TestCaseSource("SubAtomicByCases")]
+        #endregion
+
+        [Test]
         [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromCssSelectorChild(
-            LocatorType rootLocatorType, 
-            bool expectedAtomicCall)
+        public void AnAtomicCallIsMadeWhenBothLocatorsAreSubAtomic(
+            [Values] LocatorType rootLocatorType,
+            [Values] LocatorType childLocatorType
+            )
         {
+            // Arrange
+            bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
             AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.CssSelectorElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
+
+            this.findMethodLookup.TryGetValue(childLocatorType, out Func< AtomicDefinedBlock, IWebElement> method);
+
+            // Act
+            IWebElement element = method(block);
+
+            // Log
+            TestContext.WriteLine(element.Text);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                element.Should().Be(expectedAtomicCall ? 
+                        this.elementReturnedByDriver : 
+                        this.elementReturnedByFoundElement,
+                    "the wrong IWebElement was returned.");
+            }
         }
 
-        [TestCaseSource("SubAtomicByCases")]
+        [Test]
         [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromNameChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
+        public void TheCorrectCallIsMadeFromTheDriver(
+           [Values] LocatorType rootLocatorType,
+           [Values] LocatorType childLocatorType
+           )
         {
+            // Arrange
+            bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
             AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.NameElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
+            this.findMethodLookup.TryGetValue(childLocatorType, out Func<AtomicDefinedBlock, IWebElement> method);
+
+            // Act
+            IWebElement element = method(block);
+
+            // Log
+            var driverCalls = Fake.GetCalls(this.driver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            TestContext.WriteLine($"There were {driverCalls.Count} call(s) to the IWebDriver.");
+            foreach (var call in driverCalls)
+            {
+                TestContext.WriteLine($"The method called on the IWebDriver was {call.Method.Name}({call.ArgumentsAfterCall[0]})");
+            }
+
+            // Assert
+            using (new AssertionScope())
+            {
+                driverCalls.Count().Should().Be(1);
+                if (expectedAtomicCall)
+                {
+                    driverCalls[0].ArgumentsAfterCall[0].ToString().Should().StartWith("By.CssSelector");
+                }
+            }
         }
 
-        [TestCaseSource("SubAtomicByCases")]
+        [Test]
         [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedTagNameChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
+        public void ACallIsMadeFromTheReturnedElementOnlyOnNonAtomicCalls(
+            [Values] LocatorType rootLocatorType,
+            [Values] LocatorType childLocatorType
+            )
         {
+            // Arrange
+            bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
             AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.TagNameElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
+
+            this.findMethodLookup.TryGetValue(childLocatorType, out Func<AtomicDefinedBlock, IWebElement> method);
+
+            // Act
+            IWebElement element = method(block);
+
+            // Log
+            var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            TestContext.WriteLine($"There were {returnedElementCalls.Count} call(s) to the returned Element.");
+            foreach (var call in returnedElementCalls)
+            {
+                TestContext.WriteLine($"The Call made to the returnedElement was {call.Method.Name}({call.ArgumentsAfterCall[0]})");
+            }
+
+            // Assert
+            returnedElementCalls.Count().Should().Be(expectedAtomicCall ? 0 : 1);
         }
 
-        [TestCaseSource("SubAtomicByCases")]
-        [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromClassNameChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
+        [TearDown]
+        public void TearDown()
         {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.ClassNameElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
-        }
-
-        [TestCaseSource("SubAtomicByCases")]
-        [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromIdChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
-        {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.IdElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
-        }
-
-        [TestCaseSource("NonAtomicByCases")]
-        [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromXPathChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
-        {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.XPathElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
-        }
-
-        [TestCaseSource("NonAtomicByCases")]
-        [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromLinkTextChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
-        {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.LinkTextElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
-        }
-
-        [TestCaseSource("NonAtomicByCases")]
-        [Category("Unit")]
-        public void AtomicCallIsMadeWhenExpectedFromPartialLinkTextChild(
-            LocatorType rootLocatorType,
-            bool expectedAtomicCall)
-        {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
-            IWebElement element = block.PartialLinkTextElement();
-            AssertCorrectTypeOfCallWasMade(element, expectedAtomicCall);
+            Fake.ClearRecordedCalls(this.driver);
+            Fake.ClearRecordedCalls(this.elementReturnedByDriver);
         }
 
         private AtomicDefinedBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
@@ -189,6 +220,8 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 return new AtomicDefinedBlock("css", driver);
         }
 
+
+
         private void AssertCorrectTypeOfCallWasMade(IWebElement element, bool expectedAtomicCall)
         {
             using (new AssertionScope())
@@ -197,6 +230,33 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
                 element.Should().Be(expectedAtomicCall ? this.elementReturnedByDriver : this.elementReturnedByFoundElement,
                     "the wrong IWebElement was returned.");
                 element.Text.Should().Be(expectedAtomicCall ? AtomicMessage : ChainedMessage);
+
+
+                var dcList = Fake.GetCalls(this.driver).ToList();
+                var driverCalls = Fake.GetCalls(this.driver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+                TestContext.WriteLine($"The Call made to the driver was {driverCalls[0].Method.Name}({driverCalls[0].ArgumentsAfterCall[0]})");
+
+
+                var recList = Fake.GetCalls(this.elementReturnedByDriver).ToList();
+                var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+                TestContext.WriteLine($"There were {returnedElementCalls.Count} call(s) to the returned Element.");
+                foreach (var call in returnedElementCalls)
+                {
+                    TestContext.WriteLine($"The Call made to the returnedElement was {call.Method.Name}({call.ArgumentsAfterCall[0]})");
+                }
+
+                driverCalls.Count().Should().Be(1);
+
+                if (expectedAtomicCall)
+                {
+                    driverCalls[0].ArgumentsAfterCall[0].ToString().Should().StartWith("By.CssSelector");
+                    returnedElementCalls.Count().Should().Be(0);
+                }
+                else
+                {
+                    //driverCalls[0].ArgumentsAfterCall[0].ToString().Should().NotStartWith("By.CssSelector");
+                    returnedElementCalls.Count().Should().Be(1);
+                }
             }
         }
     }

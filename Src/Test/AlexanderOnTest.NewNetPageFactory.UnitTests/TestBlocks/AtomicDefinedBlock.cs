@@ -10,16 +10,16 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
     class AtomicDefinedBlock : AtomicDefinedBlockController
     {
-        internal new bool preferAtomic;
+        internal new bool PreferAtomic;
 
         public AtomicDefinedBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
         {
-            this.preferAtomic = base.preferAtomic;
+            this.PreferAtomic = base.PreferAtomic;
         }
 
         public AtomicDefinedBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
         {
-            this.preferAtomic = base.preferAtomic;
+            this.PreferAtomic = base.PreferAtomic;
         }
 
         public IWebElement StringElement() => this.FindElement("css");
