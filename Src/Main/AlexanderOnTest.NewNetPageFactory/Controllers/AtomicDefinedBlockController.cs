@@ -1,17 +1,17 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace AlexanderOnTest.NewNetPageFactory.Controllers
 {
     public abstract class AtomicDefinedBlockController
     {
-        protected readonly bool preferAtomic;
+        protected readonly bool PreferAtomic;
 
         protected AtomicDefinedBlockController(string rootElementCssSelector, IWebDriver driver)
         {
             Driver = driver;
-            this.preferAtomic = true;
+            this.PreferAtomic = true;
             this.RootElementCssSelector = rootElementCssSelector;
         }
 
@@ -22,13 +22,13 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
             Func<string, string> conversionFunc = locatorType.ConvertToCssSelectorFunc();
             if (conversionFunc != null)
             {
-                this.preferAtomic = true;
+                this.PreferAtomic = true;
                 this.RootElementCssSelector = conversionFunc(locatorValue);
                 this.RootElementBy = By.CssSelector(RootElementCssSelector);
             }
             else
             {
-                this.preferAtomic = false;
+                this.PreferAtomic = false;
                 this.RootElementBy = rootElementBy;
             }
         }
@@ -39,24 +39,39 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         
         protected By RootElementBy { get;  }
 
-        public async Task<IWebElement> GetRootElement()
+        public IWebElement GetRootElement()
         {
             return Driver.FindElement(RootElementBy);
         }
 
         protected IWebElement FindElement(string relativeCssSelector)
         {
-            return (preferAtomic)
+            return (PreferAtomic)
                 ? Driver.FindElement(By.CssSelector($"{RootElementCssSelector} {relativeCssSelector}")) 
-                : Driver.FindElement(RootElementBy).FindElement(By.CssSelector(relativeCssSelector));
+                : this.GetRootElement().FindElement(By.CssSelector(relativeCssSelector));
         }
 
         protected IWebElement FindElement(By relativeBy)
         {
             var relativeByData = new ByData(relativeBy);
-            return (preferAtomic && relativeByData.IsSubAtomic)
+            return (PreferAtomic && relativeByData.IsSubAtomic)
                 ? Driver.FindElement(By.CssSelector($"{RootElementCssSelector} {relativeByData.CssLocator}"))
-                : Driver.FindElement(RootElementBy).FindElement(relativeBy);
+                : this.GetRootElement().FindElement(relativeBy);
+        }
+
+        protected ReadOnlyCollection<IWebElement> FindElements(string relativeCssSelector)
+        {
+            return (PreferAtomic)
+                ? Driver.FindElements(By.CssSelector($"{RootElementCssSelector} {relativeCssSelector}"))
+                : this.GetRootElement().FindElements(By.CssSelector(relativeCssSelector));
+        }
+
+        protected ReadOnlyCollection<IWebElement> FindElements(By relativeBy)
+        {
+            var relativeByData = new ByData(relativeBy);
+            return (PreferAtomic && relativeByData.IsSubAtomic)
+                ? Driver.FindElements(By.CssSelector($"{RootElementCssSelector} {relativeByData.CssLocator}"))
+                : this.GetRootElement().FindElements(relativeBy);
         }
     }
 }

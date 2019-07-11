@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using AlexanderOnTest.NewNetPageFactory.Controllers;
-using NUnit.Framework.Constraints;
 using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
-    class AtomicDefinedBlock : AtomicDefinedBlockController
+    public class AtomicDefinedBlock : AtomicDefinedBlockController
     {
-        internal new bool preferAtomic;
+        internal new bool PreferAtomic;
 
         public AtomicDefinedBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
         {
-            this.preferAtomic = base.preferAtomic;
+            this.PreferAtomic = base.PreferAtomic;
         }
 
         public AtomicDefinedBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
         {
-            this.preferAtomic = base.preferAtomic;
+            this.PreferAtomic = base.PreferAtomic;
         }
 
         public IWebElement StringElement() => this.FindElement("css");
@@ -39,5 +35,23 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
         public IWebElement LinkTextElement() => this.FindElement(By.LinkText("linkText"));
 
         public IWebElement PartialLinkTextElement() => this.FindElement(By.PartialLinkText("partialLinkText"));
+
+        public ReadOnlyCollection<IWebElement> StringElements() => this.FindElements("css");
+
+        public ReadOnlyCollection<IWebElement> CssSelectorElements() => this.FindElements(By.CssSelector("css"));
+
+        public ReadOnlyCollection<IWebElement> ClassNameElements() => this.FindElements(By.ClassName("class"));
+
+        public ReadOnlyCollection<IWebElement> NameElements() => this.FindElements(By.Name("name"));
+
+        public ReadOnlyCollection<IWebElement> TagNameElements() => this.FindElements(By.TagName("tagName"));
+
+        public ReadOnlyCollection<IWebElement> IdElements() => this.FindElements(By.Id("id"));
+
+        public ReadOnlyCollection<IWebElement> XPathElements() => this.FindElements(By.XPath("xpath"));
+
+        public ReadOnlyCollection<IWebElement> LinkTextElements() => this.FindElements(By.LinkText("linkText"));
+
+        public ReadOnlyCollection<IWebElement> PartialLinkTextElements() => this.FindElements(By.PartialLinkText("partialLinkText"));
     }
 }
