@@ -5,7 +5,7 @@ mono: none
 dotnet: 2.2
 addons:
   sonarcloud:
-    organization: "alexanderontesting-github"
+    organization: "alexanderontest-github"
 script:
  - dotnet build
  - dotnet test --no-build --filter=TestCategory=Unit
