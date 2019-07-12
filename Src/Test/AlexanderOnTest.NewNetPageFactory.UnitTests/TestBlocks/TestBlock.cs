@@ -4,16 +4,18 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
-    public class AtomicDefinedBlock : AtomicDefinedBlockController
+    public class TestBlock : AbstractPageBlock
     {
         internal new bool PreferAtomic;
 
-        public AtomicDefinedBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
+        public TestBlock(IWebElement rootElement) : base(rootElement) { }
+
+        public TestBlock(string rootElementCssSelector, IWebDriver driver) : base(rootElementCssSelector, driver)
         {
             this.PreferAtomic = base.PreferAtomic;
         }
 
-        public AtomicDefinedBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
+        public TestBlock(By rootElementBy, IWebDriver driver) : base(rootElementBy, driver)
         {
             this.PreferAtomic = base.PreferAtomic;
         }

@@ -11,11 +11,11 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
-    [TestFixture]
     [Category("Unit")]
-    public class DefinedBlockFindElementsTests : AbstractDefinedBlockTests
+    [TestFixture]
+    public class PageBlockFindElementsTests : AbstractPageBlockTests
     {
-        private Dictionary<LocatorType, Func<AtomicDefinedBlock, ReadOnlyCollection<IWebElement>>>
+        private Dictionary<LocatorType, Func<TestBlock, ReadOnlyCollection<IWebElement>>>
             findElementsMethodLookup;
 
         private ReadOnlyCollection<IWebElement> elementsReturnedByDriver;
@@ -43,13 +43,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 
             A.CallTo(driver).WithReturnType<ReadOnlyCollection<IWebElement>>()
                 .Returns(elementsReturnedByDriver);
-            //A.CallTo(() => this.elementReturnedByDriver.Text).Returns(AtomicMessage);
-
-            //A.CallTo(() => elementInElementsReturnedByFoundElement.Text).Returns(ChainedMessage);
-
 
             this.findElementsMethodLookup =
-                new Dictionary<LocatorType, Func<AtomicDefinedBlock, ReadOnlyCollection<IWebElement>>>
+                new Dictionary<LocatorType, Func<TestBlock, ReadOnlyCollection<IWebElement>>>
                 {
                         {LocatorType.CssSelector, (definedBlock) => definedBlock.CssSelectorElements()},
                         {LocatorType.Id, (definedBlock) => definedBlock.IdElements()},
@@ -70,9 +66,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         {
             // Arrange
             bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            TestBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
-            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<AtomicDefinedBlock, ReadOnlyCollection<IWebElement>> method);
+            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<TestBlock, ReadOnlyCollection<IWebElement>> method);
 
             // Act
             ReadOnlyCollection<IWebElement> elements = method(block);
@@ -99,9 +95,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         {
             // Arrange
             bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            TestBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
-            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<AtomicDefinedBlock, ReadOnlyCollection<IWebElement>> method);
+            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<TestBlock, ReadOnlyCollection<IWebElement>> method);
 
             // Act
             ReadOnlyCollection<IWebElement> elements = method(block);
@@ -138,9 +134,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         {
             // Arrange
             bool expectedAtomicCall = rootLocatorType.IsSubAtomic() && childLocatorType.IsSubAtomic();
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            TestBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
-            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<AtomicDefinedBlock, ReadOnlyCollection<IWebElement>> method);
+            this.findElementsMethodLookup.TryGetValue(childLocatorType, out Func<TestBlock, ReadOnlyCollection<IWebElement>> method);
 
             // Act
             ReadOnlyCollection<IWebElement> elements = method(block);
