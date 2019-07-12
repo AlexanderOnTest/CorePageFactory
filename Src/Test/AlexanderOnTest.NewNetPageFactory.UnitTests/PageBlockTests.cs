@@ -6,7 +6,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
     [Category("Unit")]
     [TestFixture]
-    public class PageBlockTests : AbstractPageBlockTests
+    public class PageBlockTests : BlockTests
     {
         static readonly object[] SubAtomicByCases =
         {

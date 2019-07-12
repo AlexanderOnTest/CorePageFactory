@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace AlexanderOnTest.NewNetPageFactory.Controllers
+namespace AlexanderOnTest.NewNetPageFactory
 {
-    public abstract class AbstractPageController : IPageController
+    public abstract class Page
     {
         public abstract string GetExpectedPageTitle();
 

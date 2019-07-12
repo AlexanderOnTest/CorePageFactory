@@ -8,7 +8,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
     [Category("Unit")]
     [TestFixture]
-    public abstract class AbstractPageBlockTests
+    public abstract class BlockTests
     {
         protected Dictionary<LocatorType, By> byLookup;
         protected readonly string AtomicMessage = "This was an Atomic call";

@@ -12,7 +12,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
     [Category("Unit")]
     [TestFixture]
-    public class PageBlockFindElementTests : AbstractPageBlockTests
+    public class PageBlockFindElementTests : BlockTests
     {
         private Dictionary<LocatorType, Func<TestBlock, IWebElement>> findElementMethodLookup;
         private IWebElement elementReturnedByFoundElement;

@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using AlexanderOnTest.NewNetPageFactory.Controllers;
 using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
-    public class TestBlock : AbstractPageBlock
+    public class TestBlock : Block
     {
         internal new bool PreferAtomic;
 

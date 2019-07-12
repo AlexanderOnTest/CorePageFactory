@@ -1,14 +1,14 @@
-﻿using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium;
 
-namespace AlexanderOnTest.NewNetPageFactory.Controllers
+namespace AlexanderOnTest.NewNetPageFactory
 {
     /// <summary>
     /// <para> Abstract class with methods to support PageBlocks whose Root IWebElement can be defined.</para>
     /// <para> Uses atomic WebDriver calls where possible </para>
     /// </summary>
-    public abstract class AbstractPageBlock : IBlockController
+    public abstract class Block
     {
         protected readonly bool PreferAtomic;
         private readonly IWebElement rootElement;
@@ -18,7 +18,7 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         /// <para> Note: A DOM update can cause the rootElement to become stale.</para>
         /// </summary>
         /// <param name="rootElement"></param>
-        protected AbstractPageBlock(IWebElement rootElement)
+        protected Block(IWebElement rootElement)
         {
             Driver = null;
             this.PreferAtomic = false;
@@ -30,7 +30,7 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         /// </summary>
         /// <param name="rootElementCssSelector"></param>
         /// <param name="driver"></param>
-        protected AbstractPageBlock(string rootElementCssSelector, IWebDriver driver)
+        protected Block(string rootElementCssSelector, IWebDriver driver)
         {
             Driver = driver;
             this.PreferAtomic = true;
@@ -41,7 +41,7 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
         /// <summary>
         /// Create a BlockController using a By locator to define the IWebElement at its root.
         /// </summary>
-        protected AbstractPageBlock(By rootElementBy, IWebDriver driver)
+        protected Block(By rootElementBy, IWebDriver driver)
         {
             Driver = driver;
             (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
