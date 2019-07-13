@@ -3,9 +3,9 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory
 {
-    public static class ByExtensions
+    internal static class ByExtensions
     {
-        public static (LocatorType locatorType, string locatorValue) GetLocatorDetail(this By by)
+        internal static (LocatorType locatorType, string locatorValue) GetLocatorDetail(this By by)
         {
             (string locatorType, string locatorValue) byDetail;
 
@@ -26,7 +26,7 @@ namespace AlexanderOnTest.NewNetPageFactory
             return (locatorType, byDetail.locatorValue);
         }
 
-        public static string GetEquivalentCssLocator((LocatorType locatorType, string locatorValue) byDetails)
+        internal static string GetEquivalentCssLocator((LocatorType locatorType, string locatorValue) byDetails)
         {
             (LocatorType locatorType, var locatorValue) = byDetails;
             var conversionFunc = locatorType.ConvertToCssSelectorFunc();

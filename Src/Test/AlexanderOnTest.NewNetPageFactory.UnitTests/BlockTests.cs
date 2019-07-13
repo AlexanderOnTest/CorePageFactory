@@ -8,7 +8,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
     [Category("Unit")]
     [TestFixture]
-    public abstract class AbstractDefinedBlockTests
+    public abstract class BlockTests
     {
         protected Dictionary<LocatorType, By> byLookup;
         protected readonly string AtomicMessage = "This was an Atomic call";
@@ -40,22 +40,22 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         }
 
         [TearDown]
-        public void TearDown()
+        public void SuperTearDown()
         {
             Fake.ClearRecordedCalls(this.driver);
             Fake.ClearRecordedCalls(this.elementReturnedByDriver);
         }
 
-        protected AtomicDefinedBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
+        protected TestBlock GetBlockDefinedByLocatorType(LocatorType rootLocatorType)
         {
             if (rootLocatorType == LocatorType.String)
             {
-                return new AtomicDefinedBlock("css", driver);
+                return new TestBlock("css", driver);
             }
             else
             {
                 this.byLookup.TryGetValue(rootLocatorType, out By by);
-                return new AtomicDefinedBlock(by, driver);
+                return new TestBlock(by, driver);
             }
         }
     }

@@ -6,7 +6,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
     [Category("Unit")]
     [TestFixture]
-    public class DefinedBlockTests : AbstractDefinedBlockTests
+    public class PageBlockTests : BlockTests
     {
         static readonly object[] SubAtomicByCases =
         {
@@ -22,10 +22,9 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         };
 
         [TestCaseSource(nameof(SubAtomicByCases))]
-        [Category("Unit")]
         public void DefinedBlockPreferAtomicValueIsCorrect(LocatorType rootLocatorType, bool expectedPreferAtomic)
         {
-            AtomicDefinedBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
+            TestBlock block = GetBlockDefinedByLocatorType(rootLocatorType);
 
             (block.PreferAtomic).Should().Be(expectedPreferAtomic);
         }

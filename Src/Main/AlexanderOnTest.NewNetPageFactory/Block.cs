@@ -1,21 +1,47 @@
-﻿using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium;
 
-namespace AlexanderOnTest.NewNetPageFactory.Controllers
+namespace AlexanderOnTest.NewNetPageFactory
 {
-    public abstract class AtomicDefinedBlockController
+    /// <summary>
+    /// <para> Abstract class with methods to support PageBlocks whose Root IWebElement can be defined.</para>
+    /// <para> Uses atomic WebDriver calls where possible </para>
+    /// </summary>
+    public abstract class Block
     {
         protected readonly bool PreferAtomic;
+        private readonly IWebElement rootElement;
 
-        protected AtomicDefinedBlockController(string rootElementCssSelector, IWebDriver driver)
+        /// <summary>
+        /// <para> Create a BlockController with a previously found IWebElement as its root.</para>
+        /// <para> Note: A DOM update can cause the rootElement to become stale.</para>
+        /// </summary>
+        /// <param name="rootElement"></param>
+        protected Block(IWebElement rootElement)
+        {
+            Driver = null;
+            this.PreferAtomic = false;
+            this.rootElement = rootElement;
+        }
+
+        /// <summary>
+        /// Create a BlockController using a CssLocator string to define the IWebElement at its root.
+        /// </summary>
+        /// <param name="rootElementCssSelector"></param>
+        /// <param name="driver"></param>
+        protected Block(string rootElementCssSelector, IWebDriver driver)
         {
             Driver = driver;
             this.PreferAtomic = true;
             this.RootElementCssSelector = rootElementCssSelector;
         }
 
-        protected AtomicDefinedBlockController(By rootElementBy, IWebDriver driver)
+
+        /// <summary>
+        /// Create a BlockController using a By locator to define the IWebElement at its root.
+        /// </summary>
+        protected Block(By rootElementBy, IWebDriver driver)
         {
             Driver = driver;
             (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
@@ -41,7 +67,7 @@ namespace AlexanderOnTest.NewNetPageFactory.Controllers
 
         public IWebElement GetRootElement()
         {
-            return Driver.FindElement(RootElementBy);
+            return this.rootElement?? Driver.FindElement(RootElementBy);
         }
 
         protected IWebElement FindElement(string relativeCssSelector)
