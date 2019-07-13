@@ -19,7 +19,7 @@ namespace AlexanderOnTest.NewNetPageFactory
     /// <summary>
     /// Extension methods for the LocatorType Enum to simplify 'By' conversion.
     /// </summary>
-    public static class LocatorTypeExtension
+    internal static class LocatorTypeExtension
     {
         private static readonly Dictionary<LocatorType, Func<string, string>> LocatorConversionFunctions
             = new Dictionary<LocatorType, Func<string, string>>();
@@ -42,7 +42,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// </summary>
         /// <param name="locatorType"></param>
         /// <returns></returns>
-        public static Func<string, string> ConvertToCssSelectorFunc(this LocatorType locatorType)
+        internal static Func<string, string> ConvertToCssSelectorFunc(this LocatorType locatorType)
         {
 
             LocatorConversionFunctions.TryGetValue(locatorType, out Func<string, string> locatorConversionFunc);
@@ -55,7 +55,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// </summary>
         /// <param name="locatorType"></param>
         /// <returns></returns>
-        public static bool IsSubAtomic(this LocatorType locatorType)
+        internal static bool IsSubAtomic(this LocatorType locatorType)
         {
             return locatorType.ConvertToCssSelectorFunc() != null;
         }

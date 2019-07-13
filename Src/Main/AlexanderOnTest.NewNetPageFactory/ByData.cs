@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory
 {
-    public class ByData
+    internal class ByData
     {
         public ByData(By by)
         {
@@ -16,14 +16,14 @@ namespace AlexanderOnTest.NewNetPageFactory
             CssLocator = IsSubAtomic ? converterFunc(OriginalLocator) : null;
         }
 
-        public By By { get; }
+        internal By By { get; }
 
-        public LocatorType LocatorType { get; }
+        internal LocatorType LocatorType { get; }
 
-        public string OriginalLocator { get; }
+        internal string OriginalLocator { get; }
 
-        public bool IsSubAtomic { get; }
+        internal bool IsSubAtomic { get; }
 
-        public string CssLocator { get; }
+        internal string CssLocator { get; }
     }
 }
