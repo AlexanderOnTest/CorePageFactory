@@ -6,9 +6,18 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="log4net.config" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="5.1.1" />
     <PackageReference Include="FluentAssertions" Version="5.7.0" />
+    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
@@ -19,6 +28,22 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Main\AlexanderOnTest.NewNetPageFactory\AlexanderOnTest.NewNetPageFactory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="log4net.config">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>log4net.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="log4net.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>log4net.config</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Internal;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 {
@@ -24,10 +25,12 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             rootElement = A.Fake<IWebElement>();
             this.elementReturnedByRootElement = A.Fake<IWebElement>();
             A.CallTo(rootElement).WithReturnType<IWebElement>().Returns(elementReturnedByRootElement);
+            A.CallTo(this.rootElement).WithReturnType<IWebDriver>().Returns(this.driver);
 
             A.CallTo(() => this.rootElement.Text).Returns("This is The found rootElement");
             A.CallTo(() => this.elementReturnedByDriver.Text).Returns(AtomicMessage);
             A.CallTo(() => this.elementReturnedByRootElement.Text).Returns(ChainedMessage);
+            //A.CallTo(() => ((IWrapsDriver) this.rootElement).WrappedDriver).Returns(this.driver);
 
             this.findElementMethodLookup = new Dictionary<LocatorType, Func<TestBlock, IWebElement>>
             {
