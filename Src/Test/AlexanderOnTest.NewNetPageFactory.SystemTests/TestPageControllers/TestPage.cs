@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
-namespace AlexanderOnTest.NewNetPageFactory.SystemTests
+namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
 {
-    public class TableControllerPostPage : Page
+    public class TestPage : Page
     {
-        //private NonExistentBlock nonExistentBlock;
-
-        public TableControllerPostPage(IWebDriver driver, NonExistentBlock nonExistentBlock) : base(driver)
+        public TestPage(IWebDriver driver, NonExistentBlock nonExistentBlock) : base(driver)
         {
             this.NonExistentBlock = nonExistentBlock;
         }
@@ -19,25 +15,24 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
         public override string GetExpectedPageTitle()
         {
-            return "";
+            return "AlexanderOnTest - PageFactory Test Page";
         }
 
-        public override Uri GetExpectedUriPath()
+        public override string GetExpectedUri()
         {
-            return null;
+            return "file:///C:/src/CorePageFactory/Src/Test/AlexanderOnTest.NewNetPageFactory.SystemTests/TestPages/TestPage.html";
         }
 
         public void TimeoutFailingToFindNonExistentElement(bool useLongWait)
         {
             DateTime start = DateTime.Now;
-            double delay;
             try
             {
                 NonExistentBlock.WaitToGetRootElement(useLongWait);
             }
             catch (Exception ex)
             {
-                TestContext.Progress.WriteLine($"Time until failure : ${DateTime.Now.Subtract(start).TotalSeconds} seconds");
+                TestContext.WriteLine($"Wait timed out after {DateTime.Now.Subtract(start).TotalSeconds} seconds");
                 throw ex;
             }
         }

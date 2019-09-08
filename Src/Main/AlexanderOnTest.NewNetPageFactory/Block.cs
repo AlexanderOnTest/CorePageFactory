@@ -143,8 +143,6 @@ namespace AlexanderOnTest.NewNetPageFactory
                 : this.GetRootElement().FindElements(relativeBy);
         }
 
-        
-
         public IWebElement WaitToGetRootElement(bool useLongWait = false)
         {
             var wait = useLongWait ? LongWait : ShortWait;

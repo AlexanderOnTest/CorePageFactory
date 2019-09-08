@@ -15,7 +15,7 @@ namespace AlexanderOnTest.NewNetPageFactory
 
         public abstract string GetExpectedPageTitle();
 
-        public abstract Uri GetExpectedUriPath();
+        public abstract string GetExpectedUri();
 
         public string GetActualPageTitle()
         {
