@@ -56,6 +56,35 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
                 .WithMessage($"Timed out after {expectedTimeoutInSeconds} seconds*");
         }
 
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MinimumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds} seconds: Less than 15 of By By.TagName: tr were returned - Wait Condition not met");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MaximumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds} seconds: More than 2 of By By.TagName: tr were returned - Wait Condition not met");
+        }
+
         #region SetUpTearDown
 
         

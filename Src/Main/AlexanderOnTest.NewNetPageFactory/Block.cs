@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
@@ -20,15 +21,16 @@ namespace AlexanderOnTest.NewNetPageFactory
         private readonly TimeSpan longWaitTimeSpan;
         private readonly Lazy<IWait<IWebDriver>> shortWait;
         private readonly Lazy<IWait<IWebDriver>> longWait;
+        private readonly string parentClassName;
 
         private IWait<IWebDriver> InitShortWait()
         {
-            return new ImmutableWait(this.Driver, this.shortWaitTimeSpan);
+            return new ImmutableWait(this.Driver, this.shortWaitTimeSpan, this.parentClassName);
         }
 
         private IWait<IWebDriver> InitLongWait()
         {
-            return new ImmutableWait(this.Driver, this.longWaitTimeSpan);
+            return new ImmutableWait(this.Driver, this.longWaitTimeSpan, this.parentClassName);
         }
 
         private IWait<IWebDriver> ShortWait => 
@@ -44,13 +46,20 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// <param name="rootElement"></param>
         /// <param name="shortWaitTimeSpan"></param>
         /// <param name="longWaitTimeSpan"></param>
-        protected Block(IWebElement rootElement, TimeSpan shortWaitTimeSpan = default, TimeSpan longWaitTimeSpan = default)
+        /// <param name="parentClassName"></param>
+        protected Block(
+            IWebElement rootElement, 
+            TimeSpan shortWaitTimeSpan = default, 
+            TimeSpan longWaitTimeSpan = default, 
+            [CallerFilePath] string parentClassName = null)
         {
             this.PreferAtomic = false;
             this.rootElement = rootElement;
 
             this.shortWaitTimeSpan = (shortWaitTimeSpan == default) ? TimeSpan.FromSeconds(5) : shortWaitTimeSpan;
             this.longWaitTimeSpan = (longWaitTimeSpan == default) ? TimeSpan.FromSeconds(30) : longWaitTimeSpan;
+            
+            this.parentClassName = parentClassName;
 
             this.shortWait = new Lazy<IWait<IWebDriver>>(InitShortWait);
             this.longWait = new Lazy<IWait<IWebDriver>>(InitLongWait);
@@ -61,7 +70,15 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// </summary>
         /// <param name="rootElementCssSelector"></param>
         /// <param name="driver"></param>
-        protected Block(string rootElementCssSelector, IWebDriver driver, TimeSpan shortWaitTimeSpan = default, TimeSpan longWaitTimeSpan = default)
+        /// <param name="shortWaitTimeSpan"></param>
+        /// <param name="longWaitTimeSpan"></param>
+        /// <param name="parentClassName"></param>
+        protected Block(
+            string rootElementCssSelector, 
+            IWebDriver driver, 
+            TimeSpan shortWaitTimeSpan = default, 
+            TimeSpan longWaitTimeSpan = default,
+            [CallerFilePath] string parentClassName = null)
         {
             this.driver = driver;
             this.PreferAtomic = true;
@@ -69,16 +86,22 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             this.shortWaitTimeSpan = (shortWaitTimeSpan == default) ? TimeSpan.FromSeconds(5) : shortWaitTimeSpan;
             this.longWaitTimeSpan = (longWaitTimeSpan == default) ? TimeSpan.FromSeconds(30) : longWaitTimeSpan;
+            
+            this.parentClassName = parentClassName;
 
             this.shortWait = new Lazy<IWait<IWebDriver>>(InitShortWait);
             this.longWait = new Lazy<IWait<IWebDriver>>(InitLongWait);
         }
 
-
         /// <summary>
         /// Create a BlockController using a By locator to define the IWebElement at its root.
         /// </summary>
-        protected Block(By rootElementBy, IWebDriver driver)
+        protected Block(
+            By rootElementBy, 
+            IWebDriver driver, 
+            TimeSpan shortWaitTimeSpan = default, 
+            TimeSpan longWaitTimeSpan = default,
+            [CallerFilePath] string parentClassName = null)
         {
             this.driver = driver;
             (LocatorType locatorType, var locatorValue) = rootElementBy.GetLocatorDetail();
@@ -97,6 +120,9 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             this.shortWaitTimeSpan = (shortWaitTimeSpan == default) ? TimeSpan.FromSeconds(5) : shortWaitTimeSpan;
             this.longWaitTimeSpan = (longWaitTimeSpan == default) ? TimeSpan.FromSeconds(30) : longWaitTimeSpan;
+            
+            this.parentClassName = parentClassName;
+
             this.shortWait = new Lazy<IWait<IWebDriver>>(InitShortWait);
             this.longWait = new Lazy<IWait<IWebDriver>>(InitLongWait);
         }
@@ -147,6 +173,125 @@ namespace AlexanderOnTest.NewNetPageFactory
         {
             var wait = useLongWait ? LongWait : ShortWait;
             return wait.Until((d) => GetRootElement());
+        }
+
+        public IWebElement FindElementWithWait(string relativeCssSelector, bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+            return wait.Until((d) => FindElement(relativeCssSelector));
+        }
+
+        public IWebElement FindElementWithWait(By relativeBy, bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+            return wait.Until((d) => FindElement(relativeBy));
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
+            string relativeCssSelector,
+            int minimumElements = 1, 
+            bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+
+            try
+            {
+                return wait.Until((d) =>
+                {
+                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
+
+                    if (returnedElements.Count < minimumElements)
+                    {
+                        throw new NoSuchElementException();
+                    }
+
+                    return returnedElements;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new WebDriverTimeoutException($"{ex.Message}: Less than {minimumElements} of CssSelector {relativeCssSelector} were returned - Wait Condition not met", ex);
+            }
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
+            By relativeBy,
+            int minimumElements = 1, 
+            bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+
+            try
+            {
+                return wait.Until((d) =>            {
+                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
+
+                    if (returnedElements.Count < minimumElements)
+                    {
+                        throw new NoSuchElementException();
+                    }
+
+                    return returnedElements;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new WebDriverTimeoutException($"{ex.Message}: Less than {minimumElements} of By {relativeBy} were returned - Wait Condition not met", ex);
+            }
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
+            string relativeCssSelector,
+            int maximumElements = 1, 
+            bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+
+            try
+            {
+                return wait.Until((d) =>
+                {
+                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
+
+                    if (returnedElements.Count > maximumElements)
+                    {
+                        throw new NoSuchElementException();
+                    }
+
+                    return returnedElements;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new WebDriverTimeoutException($"{ex.Message}: More than {maximumElements} of CssSelector {relativeCssSelector} were returned - Wait Condition not met", ex);
+            }
+        }
+
+        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
+            By relativeBy,
+            int maximumElements = 1, 
+            bool useLongWait = false)
+        {
+            var wait = useLongWait ? LongWait : ShortWait;
+
+            try
+            {
+                return wait.Until((d) =>
+                {
+                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
+
+                    if (returnedElements.Count > maximumElements)
+                    {
+                        throw new NoSuchElementException();
+                    }
+
+                    return returnedElements;
+                });
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new WebDriverTimeoutException($"{ex.Message}: More than {maximumElements} of By {relativeBy} were returned - Wait Condition not met", ex);
+            }
         }
     }
 }
