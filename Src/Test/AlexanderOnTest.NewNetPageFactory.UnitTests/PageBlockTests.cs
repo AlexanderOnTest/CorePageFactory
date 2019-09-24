@@ -28,5 +28,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 
             (block.PreferAtomic).Should().Be(expectedPreferAtomic);
         }
+
+
     }
 }

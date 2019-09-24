@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		sonar-project.properties = sonar-project.properties
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlexanderOnTest.NewNetPageFactory.SystemTests", "Src\Test\AlexanderOnTest.NewNetPageFactory.SystemTests\AlexanderOnTest.NewNetPageFactory.SystemTests.csproj", "{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{342BA222-95AD-4A70-A73B-28874F02AD1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +44,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E68B548A-18EC-4FF0-8C7C-871043FB80B5} = {80B361D4-6A77-480E-AC00-94815441C400}
 		{342BA222-95AD-4A70-A73B-28874F02AD1F} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
+		{F9AE6BD5-578B-4BE1-BD4E-02CF167573D0} = {221BC348-ED8D-4B9E-A005-C91E93C0BE0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {064D603D-68B4-4F0E-A629-21262CC85724}
