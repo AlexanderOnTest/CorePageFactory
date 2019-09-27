@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using AlexanderOnTest.NetCoreWebDriverFactory;
 using AlexanderOnTest.NetCoreWebDriverFactory.Config;
 using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
@@ -16,10 +17,14 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class PageTests
     {
-        private string TestPageUri =>
-            "file:///C:/src/CorePageFactory/Src/Test/AlexanderOnTest.NewNetPageFactory.SystemTests/TestPages/TestPage.html";
-
+        internal static readonly string TestPageUri;
+        
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
+
+        static PageTests()
+        {
+            TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
+        }
 
         private IWebDriver Driver { get; set; }
 
@@ -61,6 +66,8 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            //this.TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
+            
             // Force local Browser running for local file
             IWebDriverConfiguration driverConfig =
                 WebDriverConfigurationBuilder.Start()

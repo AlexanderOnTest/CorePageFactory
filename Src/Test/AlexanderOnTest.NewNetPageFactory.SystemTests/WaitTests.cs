@@ -16,8 +16,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class WaitTests
     {
-        private string TestPageUri =>
-            "file:///C:/src/CorePageFactory/Src/Test/AlexanderOnTest.NewNetPageFactory.SystemTests/TestPages/TestPage.html";
+        private string TestPageUri;
 
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
 
@@ -118,6 +117,8 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
             Driver = ServiceProvider.GetRequiredService<IWebDriver>();
             TestPage = ServiceProvider.GetRequiredService<TestPage>();
+            
+            this.TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
         }
 
         [SetUp]

@@ -45,4 +45,11 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="TestPages\TestPage.html" />
+    <Content Include="TestPages\TestPage.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

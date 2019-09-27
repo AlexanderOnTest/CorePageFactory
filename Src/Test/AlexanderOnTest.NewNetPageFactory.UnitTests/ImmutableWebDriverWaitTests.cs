@@ -70,6 +70,22 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
         }
 
         [Test]
+        public void TryingToModifyIgnoredExceptionsThrowsException()
+        {
+            TimeSpan initialTimeout = TimeSpan.FromSeconds(30);
+
+            Trace.WriteLine($"Test: {nameof(TryingToSetTimeoutFailsSilently)} should log an error below.");
+            IWait<IWebDriver> wait = new ImmutableWait(
+                driver,
+                initialTimeout);
+            
+            Action act = () => wait.IgnoreExceptionTypes(new Type[]{typeof(WebDriverException)});
+
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage("Unsupported attempt to modify the ignored Exceptions of the immutable Wait for ImmutableWebDriverWaitTests");
+        }
+
+        [Test]
         public void TryingToSetTimeoutFailsSilently()
         {
             TimeSpan initialTimeout = TimeSpan.FromSeconds(30);
