@@ -72,7 +72,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
             IWebDriverConfiguration driverConfig =
                 WebDriverConfigurationBuilder.Start()
                     .RunHeadless()
-                    .WithBrowser(Browser.Chrome)
+                    .WithBrowser(Browser.Firefox)
                     .WithWindowSize(WindowSize.Fhd)
                     .Build();
             
