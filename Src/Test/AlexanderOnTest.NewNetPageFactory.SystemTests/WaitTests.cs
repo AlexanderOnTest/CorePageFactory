@@ -16,8 +16,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class WaitTests
     {
-        private string TestPageUri;
-
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
 
         private IWebDriver Driver { get; set; }
@@ -117,15 +115,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
             Driver = ServiceProvider.GetRequiredService<IWebDriver>();
             TestPage = ServiceProvider.GetRequiredService<TestPage>();
-            
-            this.TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
         }
 
         [SetUp]
         public void SetUp()
         {
             Driver = DriverManager.Get();
-            Driver.Url = TestPageUri;
+            Driver.Url = TestSettings.TestPageAddress;
         }
 
         [TearDown]

@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using AlexanderOnTest.NetCoreWebDriverFactory;
 using AlexanderOnTest.NetCoreWebDriverFactory.Config;
 using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
@@ -17,14 +16,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class PageTests
     {
-        internal static readonly string TestPageUri;
-        
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
-
-        static PageTests()
-        {
-            TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
-        }
 
         private IWebDriver Driver { get; set; }
 
@@ -51,7 +43,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [Test]
         public void UriStringIsReturnedCorrectly()
         {
-            TestPage.GetActualUri().Should().Be(TestPageUri);
+            TestPage.GetActualUri().Should().Be(TestSettings.TestPageAddress);
         }
         
         [Test]
@@ -66,14 +58,12 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            //this.TestPageUri = $"file://{AppDomain.CurrentDomain.BaseDirectory}TestPages/TestPage.html";
-            
             // Force local Browser running for local file
             IWebDriverConfiguration driverConfig =
                 WebDriverConfigurationBuilder.Start()
-                    .RunHeadless()
+                    //.RunHeadless()
                     .WithBrowser(Browser.Firefox)
-                    .WithWindowSize(WindowSize.Fhd)
+                    .WithWindowSize(WindowSize.Hd)
                     .Build();
             
             DriverManager = ServiceCollectionFactory.GetDefaultServiceCollection(true, driverConfig)
@@ -101,7 +91,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void SetUp()
         {
             Driver = DriverManager.Get();
-            Driver.Url = TestPageUri;
+            Driver.Url = TestSettings.TestPageAddress;
         }
 
         [TearDown]
