@@ -43,7 +43,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [Test]
         public void UriStringIsReturnedCorrectly()
         {
-            TestPage.GetActualUri().Should().Be(TestSettings.TestPageAddress);
+            TestPage.GetActualUri().Should().Be(TestSettings.TestPageUriString);
         }
         
         [Test]
@@ -61,7 +61,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
             // Force local Browser running for local file
             IWebDriverConfiguration driverConfig =
                 WebDriverConfigurationBuilder.Start()
-                    //.RunHeadless()
+                    .RunHeadless()
                     .WithBrowser(Browser.Firefox)
                     .WithWindowSize(WindowSize.Hd)
                     .Build();
@@ -91,7 +91,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void SetUp()
         {
             Driver = DriverManager.Get();
-            Driver.Url = TestSettings.TestPageAddress;
+            Driver.Url = TestSettings.TestPageUriString;
         }
 
         [TearDown]

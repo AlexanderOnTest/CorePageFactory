@@ -25,7 +25,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
 
         public override string GetExpectedUri()
         {
-            return TestSettings.TestPageAddress;
+            return TestSettings.TestPageUriString;
         }
 
         public void TimeoutFailingToFindNonExistentElement(bool useLongWait)

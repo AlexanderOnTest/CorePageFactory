@@ -121,7 +121,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void SetUp()
         {
             Driver = DriverManager.Get();
-            Driver.Url = TestSettings.TestPageAddress;
+            Driver.Url = TestSettings.TestPageUriString;
         }
 
         [TearDown]

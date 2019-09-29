@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
@@ -7,14 +8,17 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
     {
         static TestSettings()
         {
-            TestPagesDirectoryUri = new Uri($"file:///{AppDomain.CurrentDomain.BaseDirectory}");
-            TestPageAddress = new Uri(
-                TestSettings.TestPagesDirectoryUri, 
-                $"TestPages{Path.DirectorySeparatorChar}TestPage.html").ToString();
+            TestPagesDirectoryUri = new Uri(AppDomain.CurrentDomain.BaseDirectory);
+            TestPageUri = new Uri(
+                TestSettings.TestPagesDirectoryUri,
+                $"TestPages{Path.AltDirectorySeparatorChar}TestPage.html");
+            TestPageUriString = TestPageUri.ToString();
         }
 
         internal static readonly Uri TestPagesDirectoryUri;
 
-        internal static readonly string TestPageAddress;
+        internal static readonly Uri TestPageUri;
+
+        internal static readonly string TestPageUriString;
     }
 }
