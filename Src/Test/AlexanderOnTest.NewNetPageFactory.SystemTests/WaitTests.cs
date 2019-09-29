@@ -1,16 +1,11 @@
 using System;
-using AlexanderOnTest.NetCoreWebDriverFactory;
-using AlexanderOnTest.NetCoreWebDriverFactory.Config;
-using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.NetCoreWebDriverFactory.Utils.Builders;
 using AlexanderOnTest.NetCoreWebDriverFactory.WebDriverFactory;
 using AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using Scrutor;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
@@ -88,45 +83,11 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            // Force local Browser running for local file
-            IWebDriverConfiguration driverConfig =
-                WebDriverConfigurationBuilder.Start()
-                    .RunHeadless()
-                    .WithBrowser(Browser.Firefox)
-                    .WithWindowSize(WindowSize.Fhd)
-                    .Build();
-            
-            DriverManager = ServiceCollectionFactory.GetDefaultServiceCollection(true, driverConfig)
-                .BuildServiceProvider()
-                .GetRequiredService<IWebDriverManager>();
-
-            
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IWebDriver>(DriverManager.Get());
-
-            serviceCollection.Scan(scan => scan
-                .FromAssemblyOf<PageTests>()
-                .AddClasses()
-                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
-                .AsSelf()
-                .WithSingletonLifetime());
-
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-
+            ServiceProvider = ConfigurationModule.GetServiceProvider(true);
+            DriverManager = ServiceProvider.GetRequiredService<IWebDriverManager>();
             Driver = ServiceProvider.GetRequiredService<IWebDriver>();
             TestPage = ServiceProvider.GetRequiredService<TestPage>();
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            Driver = DriverManager.Get();
             Driver.Url = TestSettings.TestPageUriString;
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
         }
 
         [OneTimeTearDown]
