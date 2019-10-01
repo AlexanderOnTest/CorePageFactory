@@ -8,17 +8,20 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
     {
         static TestSettings()
         {
-            TestPagesDirectoryUri = new Uri(AppDomain.CurrentDomain.BaseDirectory);
-            TestPageUri = new Uri(
-                TestSettings.TestPagesDirectoryUri,
-                $"TestPages{Path.AltDirectorySeparatorChar}TestPage.html");
+            TestPagesDirectoryUri = new Uri(
+                $"{new Uri(AppDomain.CurrentDomain.BaseDirectory)}TestPages{Path.AltDirectorySeparatorChar}");
+            Uri TestPageUri = new Uri(
+                TestPagesDirectoryUri,
+                $"TestPage.html");
             TestPageUriString = TestPageUri.ToString();
         }
 
-        internal static readonly Uri TestPagesDirectoryUri;
+        // A Uri for the BaseUrl to enable simple 
+        private static readonly Uri TestPagesDirectoryUri;
 
-        internal static readonly Uri TestPageUri;
-
+        /// <summary>
+        /// Return the String value of the TestPage Uri for use with WebDriver methods.
+        /// </summary>
         internal static readonly string TestPageUriString;
     }
 }
