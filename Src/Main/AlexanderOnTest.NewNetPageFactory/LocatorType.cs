@@ -15,10 +15,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         PartialLinkText,
         String
     }
-
-    /// <summary>
-    /// Extension methods for the LocatorType Enum to simplify 'By' conversion.
-    /// </summary>
+    
     internal static class LocatorTypeExtension
     {
         private static readonly Dictionary<LocatorType, Func<string, string>> LocatorConversionFunctions
@@ -37,11 +34,6 @@ namespace AlexanderOnTest.NewNetPageFactory
             LocatorConversionFunctions.Add(LocatorType.String, (sel => sel));
         }
 
-        /// <summary>
-        /// Return the function to convert the locator for this LocatorType to a CssSelector; or null if not possible;
-        /// </summary>
-        /// <param name="locatorType"></param>
-        /// <returns></returns>
         internal static Func<string, string> ConvertToCssSelectorFunc(this LocatorType locatorType)
         {
 
@@ -49,12 +41,6 @@ namespace AlexanderOnTest.NewNetPageFactory
             return locatorConversionFunc;
         }
 
-        /// <summary>
-        /// <para>Return true if a 'By' of this LocatorType can be combined into Atomic WebDriver calls.</para>
-        /// <para>(In other words - the 'By' uses or can be converted to use a CssSelector)</para>
-        /// </summary>
-        /// <param name="locatorType"></param>
-        /// <returns></returns>
         internal static bool IsSubAtomic(this LocatorType locatorType)
         {
             return locatorType.ConvertToCssSelectorFunc() != null;

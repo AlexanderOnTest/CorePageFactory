@@ -1,16 +1,10 @@
 using System;
-using AlexanderOnTest.NetCoreWebDriverFactory;
-using AlexanderOnTest.NetCoreWebDriverFactory.Config;
-using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.NetCoreWebDriverFactory.Utils.Builders;
-using AlexanderOnTest.NetCoreWebDriverFactory.WebDriverFactory;
 using AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using Scrutor;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
@@ -19,8 +13,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
 
         private IWebDriver Driver { get; set; }
-
-        private IWebDriverFactory WebDriverFactory { get; set; }
 
         private IWebDriverManager DriverManager { get; set; }
 
@@ -70,7 +62,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         {
             DriverManager.Quit();
             DriverManager?.Dispose();
-            WebDriverFactory?.Dispose();
         }
 
         #endregion

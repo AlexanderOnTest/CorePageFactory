@@ -1,6 +1,5 @@
 using System;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.NetCoreWebDriverFactory.WebDriverFactory;
 using AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +13,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
 
         private IWebDriver Driver { get; set; }
-
-        private IWebDriverFactory WebDriverFactory { get; set; }
 
         private IWebDriverManager DriverManager { get; set; }
 
@@ -53,7 +50,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [TestCase(true, 2)]
         public void MinimumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
         {
-            //Ensure we are using default timeouts
+            //Ensure we are using shorter / non default timeouts
             TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
             Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait);
@@ -67,7 +64,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [TestCase(true, 2)]
         public void MaximumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
         {
-            //Ensure we are using default timeouts
+            //Ensure we are using shorter / non default timeouts
             TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
             Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait);
@@ -95,7 +92,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         {
             DriverManager.Quit();
             DriverManager?.Dispose();
-            WebDriverFactory?.Dispose();
         }
 
         #endregion

@@ -47,15 +47,15 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             this.findElementsMethodLookup =
                 new Dictionary<LocatorType, Func<TestBlock, ReadOnlyCollection<IWebElement>>>
                 {
-                        {LocatorType.CssSelector, (definedBlock) => definedBlock.CssSelectorElements()},
-                        {LocatorType.Id, (definedBlock) => definedBlock.IdElements()},
-                        {LocatorType.ClassName, (definedBlock) => definedBlock.ClassNameElements()},
-                        {LocatorType.TagName, (definedBlock) => definedBlock.TagNameElements()},
-                        {LocatorType.Name, (definedBlock) => definedBlock.NameElements()},
-                        {LocatorType.LinkText, (definedBlock) => definedBlock.LinkTextElements()},
-                        {LocatorType.PartialLinkText, (definedBlock) => definedBlock.PartialLinkTextElements()},
-                        {LocatorType.XPath, (definedBlock) => definedBlock.XPathElements()},
-                        {LocatorType.String, (definedBlock) => definedBlock.StringElements()}
+                        {LocatorType.CssSelector, definedBlock => definedBlock.CssSelectorElements()},
+                        {LocatorType.Id, definedBlock => definedBlock.IdElements()},
+                        {LocatorType.ClassName, definedBlock => definedBlock.ClassNameElements()},
+                        {LocatorType.TagName, definedBlock => definedBlock.TagNameElements()},
+                        {LocatorType.Name, definedBlock => definedBlock.NameElements()},
+                        {LocatorType.LinkText, definedBlock => definedBlock.LinkTextElements()},
+                        {LocatorType.PartialLinkText, definedBlock => definedBlock.PartialLinkTextElements()},
+                        {LocatorType.XPath, definedBlock => definedBlock.XPathElements()},
+                        {LocatorType.String, definedBlock => definedBlock.StringElements()}
                 };
         }
 
@@ -103,7 +103,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             ReadOnlyCollection<IWebElement> elements = method(block);
 
             // Log
-            var driverCalls = Fake.GetCalls(this.driver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            var driverCalls = Fake.GetCalls(this.driver).Where(c => c.Method.Name.StartsWith("FindElement")).ToList();
             TestContext.WriteLine($"There were {driverCalls.Count} call(s) to the IWebDriver.");
             foreach (var call in driverCalls)
             {
@@ -142,7 +142,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             ReadOnlyCollection<IWebElement> elements = method(block);
 
             // Log
-            var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where(c => c.Method.Name.StartsWith("FindElement")).ToList();
             TestContext.WriteLine($"There were {returnedElementCalls.Count} call(s) to the returned Element.");
             foreach (var call in returnedElementCalls)
             {

@@ -28,15 +28,15 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
 
             this.findElementMethodLookup = new Dictionary<LocatorType, Func<TestBlock, IWebElement>>
             {
-                {LocatorType.CssSelector, (definedBlock) => definedBlock.CssSelectorElement()},
-                {LocatorType.Id, (definedBlock) => definedBlock.IdElement()},
-                {LocatorType.ClassName, (definedBlock) => definedBlock.ClassNameElement()},
-                {LocatorType.TagName, (definedBlock) => definedBlock.TagNameElement()},
-                {LocatorType.Name, (definedBlock) => definedBlock.NameElement()},
-                {LocatorType.LinkText, (definedBlock) => definedBlock.LinkTextElement()},
-                {LocatorType.PartialLinkText, (definedBlock) => definedBlock.PartialLinkTextElement()},
-                {LocatorType.XPath, (definedBlock) => definedBlock.XPathElement()},
-                {LocatorType.String, (definedBlock) => definedBlock.StringElement()}
+                {LocatorType.CssSelector, definedBlock => definedBlock.CssSelectorElement()},
+                {LocatorType.Id, definedBlock => definedBlock.IdElement()},
+                {LocatorType.ClassName, definedBlock => definedBlock.ClassNameElement()},
+                {LocatorType.TagName, definedBlock => definedBlock.TagNameElement()},
+                {LocatorType.Name, definedBlock => definedBlock.NameElement()},
+                {LocatorType.LinkText, definedBlock => definedBlock.LinkTextElement()},
+                {LocatorType.PartialLinkText, definedBlock => definedBlock.PartialLinkTextElement()},
+                {LocatorType.XPath, definedBlock => definedBlock.XPathElement()},
+                {LocatorType.String, definedBlock => definedBlock.StringElement()}
             };
         }
 
@@ -83,7 +83,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             _ = method(block);
 
             // Log
-            var driverCalls = Fake.GetCalls(this.driver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            var driverCalls = Fake.GetCalls(this.driver).Where(c => c.Method.Name.StartsWith("FindElement")).ToList();
             TestContext.WriteLine($"There were {driverCalls.Count} call(s) to the IWebDriver.");
             foreach (var call in driverCalls)
             {
@@ -118,7 +118,7 @@ namespace AlexanderOnTest.NewNetPageFactory.UnitTests
             _ = method(block);
 
             // Log
-            var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where((c) => c.Method.Name.StartsWith("FindElement")).ToList();
+            var returnedElementCalls = Fake.GetCalls(this.elementReturnedByDriver).Where(c => c.Method.Name.StartsWith("FindElement")).ToList();
             TestContext.WriteLine($"There were {returnedElementCalls.Count} call(s) to the returned Element.");
             foreach (var call in returnedElementCalls)
             {

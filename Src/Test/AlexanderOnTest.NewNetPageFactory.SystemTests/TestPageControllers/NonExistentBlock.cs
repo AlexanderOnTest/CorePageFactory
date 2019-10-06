@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
 {
-    public class NonExistentBlock : Block
+    public class NonExistentBlock : BlockController
     {
         private const string rootElementCssSelector = ".ThisClassDoesNotExist";
 

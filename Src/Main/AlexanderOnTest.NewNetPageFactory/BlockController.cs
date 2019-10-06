@@ -11,7 +11,7 @@ namespace AlexanderOnTest.NewNetPageFactory
     /// <para> Abstract class with methods to support PageBlocks whose Root IWebElement can be defined.</para>
     /// <para> Uses atomic WebDriver calls where possible </para>
     /// </summary>
-    public abstract class Block
+    public abstract class BlockController : IBlockController
     {
         protected readonly bool PreferAtomic;
         private readonly IWebElement rootElement;
@@ -47,7 +47,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// <param name="shortWaitTimeSpan"></param>
         /// <param name="longWaitTimeSpan"></param>
         /// <param name="parentClassName"></param>
-        protected Block(
+        protected BlockController(
             IWebElement rootElement, 
             TimeSpan shortWaitTimeSpan = default, 
             TimeSpan longWaitTimeSpan = default, 
@@ -73,7 +73,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// <param name="shortWaitTimeSpan"></param>
         /// <param name="longWaitTimeSpan"></param>
         /// <param name="parentClassName"></param>
-        protected Block(
+        protected BlockController(
             string rootElementCssSelector, 
             IWebDriver driver, 
             TimeSpan shortWaitTimeSpan = default, 
@@ -96,7 +96,7 @@ namespace AlexanderOnTest.NewNetPageFactory
         /// <summary>
         /// Create a BlockController using a By locator to define the IWebElement at its root.
         /// </summary>
-        protected Block(
+        protected BlockController(
             By rootElementBy, 
             IWebDriver driver, 
             TimeSpan shortWaitTimeSpan = default, 
@@ -172,22 +172,22 @@ namespace AlexanderOnTest.NewNetPageFactory
         public IWebElement WaitToGetRootElement(bool useLongWait = false)
         {
             var wait = useLongWait ? LongWait : ShortWait;
-            return wait.Until((d) => GetRootElement());
+            return wait.Until(d => GetRootElement());
         }
 
-        public IWebElement FindElementWithWait(string relativeCssSelector, bool useLongWait = false)
+        protected IWebElement FindElementWithWait(string relativeCssSelector, bool useLongWait = false)
         {
             var wait = useLongWait ? LongWait : ShortWait;
-            return wait.Until((d) => FindElement(relativeCssSelector));
+            return wait.Until(d => FindElement(relativeCssSelector));
         }
 
-        public IWebElement FindElementWithWait(By relativeBy, bool useLongWait = false)
+        protected IWebElement FindElementWithWait(By relativeBy, bool useLongWait = false)
         {
             var wait = useLongWait ? LongWait : ShortWait;
-            return wait.Until((d) => FindElement(relativeBy));
+            return wait.Until(d => FindElement(relativeBy));
         }
 
-        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
+        protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
             string relativeCssSelector,
             int minimumElements = 1, 
             bool useLongWait = false)
@@ -196,7 +196,7 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             try
             {
-                return wait.Until((d) =>
+                return wait.Until(d =>
                 {
                     ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
 
@@ -214,7 +214,7 @@ namespace AlexanderOnTest.NewNetPageFactory
             }
         }
 
-        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
+        protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
             By relativeBy,
             int minimumElements = 1, 
             bool useLongWait = false)
@@ -223,7 +223,7 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             try
             {
-                return wait.Until((d) =>            {
+                return wait.Until(d =>            {
                     ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
 
                     if (returnedElements.Count < minimumElements)
@@ -240,7 +240,7 @@ namespace AlexanderOnTest.NewNetPageFactory
             }
         }
 
-        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
+        protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
             string relativeCssSelector,
             int maximumElements = 1, 
             bool useLongWait = false)
@@ -249,7 +249,7 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             try
             {
-                return wait.Until((d) =>
+                return wait.Until(d =>
                 {
                     ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
 
@@ -267,7 +267,7 @@ namespace AlexanderOnTest.NewNetPageFactory
             }
         }
 
-        public ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
+        protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
             By relativeBy,
             int maximumElements = 1, 
             bool useLongWait = false)
@@ -276,7 +276,7 @@ namespace AlexanderOnTest.NewNetPageFactory
 
             try
             {
-                return wait.Until((d) =>
+                return wait.Until(d =>
                 {
                     ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
 
