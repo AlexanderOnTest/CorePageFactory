@@ -10,8 +10,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class WaitTests
     {
-        private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
-
         private IWebDriver Driver { get; set; }
 
         private IWebDriverManager DriverManager { get; set; }
@@ -30,7 +28,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
             Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait);
             act
                 .Should().Throw<WebDriverTimeoutException>()
-                .WithMessage($"Timed out after {expectedTimeoutInSeconds} seconds*");
+                .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
         }
 
         [TestCase(false, 1)]
@@ -57,7 +55,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage(
-                    $"Timed out after {expectedTimeoutInSeconds} seconds: Less than 15 of By By.TagName: tr were returned - Wait Condition not met");
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: Less than 15 (By.CssSelector: tr) were found in the searched context.");
         }
         
         [TestCase(false, 1)]
@@ -71,7 +69,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage(
-                    $"Timed out after {expectedTimeoutInSeconds} seconds: More than 2 of By By.TagName: tr were returned - Wait Condition not met");
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: More than 2 (By.TagName: tr) were found in the searched context.");
         }
 
         #region SetUpTearDown

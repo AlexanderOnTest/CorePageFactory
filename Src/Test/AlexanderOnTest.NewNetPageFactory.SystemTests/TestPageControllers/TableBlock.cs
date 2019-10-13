@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
@@ -10,6 +11,8 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
     public class TableBlock : BlockController
     {
         internal const string CustomerTableRootElementCssSelector = "#customers";
+
+        internal const string TableRowCssSelector = "tr";
 
         /// <summary>
         /// Default TableBlock constructor calling the BlockController(string rootCssSelector...) constructor
@@ -47,7 +50,7 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// <returns></returns>
         public IReadOnlyCollection<IWebElement> WaitForMinimumRowsToLoadAndReturn(int minimumNumberOfRowsRequired, bool useLongWait = false)
         {
-            return FindElementsWithWaitForMinimumElements(By.TagName("tr"), minimumNumberOfRowsRequired, useLongWait);
+            return FindElementsWithWaitForMinimumElements(TableRowCssSelector, minimumNumberOfRowsRequired, useLongWait);
         }
 
         /// <summary>

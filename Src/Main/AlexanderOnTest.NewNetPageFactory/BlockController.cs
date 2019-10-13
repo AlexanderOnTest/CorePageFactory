@@ -194,24 +194,18 @@ namespace AlexanderOnTest.NewNetPageFactory
         {
             var wait = useLongWait ? LongWait : ShortWait;
 
-            try
-            {
-                return wait.Until(d =>
-                {
-                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
+            Func<ReadOnlyCollection<IWebElement>> findFunction = () => FindElements(relativeCssSelector);
 
-                    if (returnedElements.Count < minimumElements)
-                    {
-                        throw new NoSuchElementException();
-                    }
+            Func<ReadOnlyCollection<IWebElement>, bool> conditionFunction =
+                (returnedElements) => returnedElements.Count < minimumElements;
 
-                    return returnedElements;
-                });
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new WebDriverTimeoutException($"{ex.Message}: Less than {minimumElements} of CssSelector {relativeCssSelector} were returned - Wait Condition not met", ex);
-            }
+            string failMessage = $"Less than {minimumElements.ToString()} (By.CssSelector: {relativeCssSelector})";
+            
+            return FindElementsWithWait(
+                wait, 
+                findFunction, 
+                conditionFunction, 
+                failMessage);
         }
 
         protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMinimumElements(
@@ -219,52 +213,41 @@ namespace AlexanderOnTest.NewNetPageFactory
             int minimumElements = 1, 
             bool useLongWait = false)
         {
-            var wait = useLongWait ? LongWait : ShortWait;
+            IWait<IWebDriver> wait = useLongWait ? LongWait : ShortWait;
 
-            try
-            {
-                return wait.Until(d =>            {
-                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
+            Func<ReadOnlyCollection<IWebElement>> findFunction = () => FindElements(relativeBy);
 
-                    if (returnedElements.Count < minimumElements)
-                    {
-                        throw new NoSuchElementException();
-                    }
+            Func<ReadOnlyCollection<IWebElement>, bool> conditionFunction =
+                (returnedElements) => returnedElements.Count < minimumElements;
 
-                    return returnedElements;
-                });
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new WebDriverTimeoutException($"{ex.Message}: Less than {minimumElements} of By {relativeBy} were returned - Wait Condition not met", ex);
-            }
+            string failMessage = $"Less than {minimumElements.ToString()} ({relativeBy})";
+
+            return FindElementsWithWait(
+                wait, 
+                findFunction, 
+                conditionFunction, 
+                failMessage);
         }
-
+        
         protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
             string relativeCssSelector,
             int maximumElements = 1, 
             bool useLongWait = false)
         {
-            var wait = useLongWait ? LongWait : ShortWait;
+            IWait<IWebDriver> wait = useLongWait ? LongWait : ShortWait;
 
-            try
-            {
-                return wait.Until(d =>
-                {
-                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeCssSelector);
+            Func<ReadOnlyCollection<IWebElement>> findFunction = () => FindElements(relativeCssSelector);
 
-                    if (returnedElements.Count > maximumElements)
-                    {
-                        throw new NoSuchElementException();
-                    }
+            Func<ReadOnlyCollection<IWebElement>, bool> conditionFunction =
+                (returnedElements) => returnedElements.Count > maximumElements;
 
-                    return returnedElements;
-                });
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new WebDriverTimeoutException($"{ex.Message}: More than {maximumElements} of CssSelector {relativeCssSelector} were returned - Wait Condition not met", ex);
-            }
+            string failMessage = $"More than {maximumElements.ToString()} (By.CssSelector: {relativeCssSelector})";
+
+            return FindElementsWithWait(
+                wait, 
+                findFunction, 
+                conditionFunction, 
+                failMessage);
         }
 
         protected ReadOnlyCollection<IWebElement> FindElementsWithWaitForMaximumElements(
@@ -272,15 +255,44 @@ namespace AlexanderOnTest.NewNetPageFactory
             int maximumElements = 1, 
             bool useLongWait = false)
         {
-            var wait = useLongWait ? LongWait : ShortWait;
+            IWait<IWebDriver> wait = useLongWait ? LongWait : ShortWait;
 
+            Func<ReadOnlyCollection<IWebElement>> findFunction = () => FindElements(relativeBy);
+
+            Func<ReadOnlyCollection<IWebElement>, bool> conditionFunction =
+                (returnedElements) => returnedElements.Count > maximumElements;
+
+            string failMessage = $"More than {maximumElements.ToString()} ({relativeBy})";
+
+            return FindElementsWithWait(
+                wait, 
+                findFunction, 
+                conditionFunction, 
+                failMessage);
+        }
+
+        /// <summary>
+        /// General Purpose Wait for FindElements to meet a given condition.
+        /// </summary>
+        /// <param name="wait"></param>
+        /// <param name="findFunction"></param>
+        /// <param name="conditionFunction"></param>
+        /// <param name="conditionDescription"></param>
+        /// <returns></returns>
+        /// <exception cref="NoSuchElementException"></exception>
+        /// <exception cref="WebDriverTimeoutException"></exception>
+        protected ReadOnlyCollection<IWebElement> FindElementsWithWait(
+            IWait<IWebDriver> wait, 
+            Func<ReadOnlyCollection<IWebElement>> findFunction,
+            Func<ReadOnlyCollection<IWebElement>, bool> conditionFunction,
+            string conditionDescription)
+        {
             try
             {
-                return wait.Until(d =>
-                {
-                    ReadOnlyCollection<IWebElement> returnedElements = FindElements(relativeBy);
-
-                    if (returnedElements.Count > maximumElements)
+                return wait.Until(d => {
+                    ReadOnlyCollection<IWebElement> returnedElements = findFunction.Invoke();
+                    
+                    if (conditionFunction(returnedElements))
                     {
                         throw new NoSuchElementException();
                     }
@@ -290,7 +302,8 @@ namespace AlexanderOnTest.NewNetPageFactory
             }
             catch (WebDriverTimeoutException ex)
             {
-                throw new WebDriverTimeoutException($"{ex.Message}: More than {maximumElements} of By {relativeBy} were returned - Wait Condition not met", ex);
+                throw new WebDriverTimeoutException(
+                    $"{ex.Message}: {conditionDescription} were found in the searched context.", ex);
             }
         }
     }
