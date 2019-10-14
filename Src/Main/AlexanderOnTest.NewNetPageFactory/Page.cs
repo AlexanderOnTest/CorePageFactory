@@ -1,11 +1,13 @@
-﻿using System;
+﻿using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory
 {
-    public abstract class Page
+    public abstract class Page : PageController, IPageData
     {
+        protected Page(IWebDriver driver) : base (driver) { }
+
         public abstract string GetExpectedPageTitle();
 
-        public abstract Uri GetExpectedUriPath();
+        public abstract string GetExpectedUri();
     }
 }

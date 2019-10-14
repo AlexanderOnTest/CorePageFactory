@@ -3,7 +3,7 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.UnitTests.TestBlocks
 {
-    public class TestBlock : Block
+    public class TestBlock : BlockController
     {
         internal new bool PreferAtomic;
 
