@@ -17,9 +17,11 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         {
         }
 
-        public IWebElement FindNonExistentElement(bool useLongWait)
+        public IWebElement FindNonExistentElement(bool useLongWait, bool useBy)
         {
-            return FindElementWithWait(By.CssSelector(rootElementCssSelector), useLongWait);
+            return useBy ?
+                FindElementWithWait(By.CssSelector(rootElementCssSelector), useLongWait) :
+                FindElementWithWait(rootElementCssSelector, useLongWait) ;
         }
     }
 }

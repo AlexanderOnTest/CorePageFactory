@@ -18,6 +18,20 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
         private TestPage TestPage { get; set; }
 
+        [TestCase(true, 2)]
+        [TestCase(false, 1)]
+        public void WaitForRootElementWorks(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            {
+                //Ensure we are using shorter / non default timeouts
+                TestPage.NonExistentBlock = new NonExistentBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+                Action act = () => TestPage.TimeoutFailingToFindRootElement(useLongWait);
+                act
+                    .Should().Throw<WebDriverTimeoutException>()
+                    .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
+            }
+        }
+        
         [TestCase(false, 5)]
         [TestCase(true, 30)]
         public void DefaultWaitTimesOutAfterExpectedTime(

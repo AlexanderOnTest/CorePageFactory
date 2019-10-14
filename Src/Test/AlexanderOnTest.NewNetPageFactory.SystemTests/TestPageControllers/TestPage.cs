@@ -48,14 +48,32 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// </summary>
         /// <param name="useLongWait"></param>
         /// <exception cref="Exception"></exception>
+        public IWebElement TimeoutFailingToFindRootElement(bool useLongWait)
+        {
+            DateTime start = DateTime.Now;
+            try
+            {
+                return NonExistentBlock.WaitToGetRootElement(useLongWait);
+            }
+            catch (Exception ex)
+            {
+                TestContext.WriteLine($"Wait timed out after {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Test timeout duration by waiting for the non existent block to load.
+        /// </summary>
+        /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
+        /// <exception cref="Exception"></exception>
         public IWebElement TimeoutFailingToFindNonExistentElement(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                return useBy ?
-                    NonExistentBlock.FindNonExistentElement(useLongWait) :
-                    NonExistentBlock.WaitToGetRootElement(useLongWait);
+                return NonExistentBlock.FindNonExistentElement(useLongWait, useBy);
             }
             catch (Exception ex)
             {
