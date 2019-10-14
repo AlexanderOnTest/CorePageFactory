@@ -47,10 +47,16 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// </summary>
         /// <param name="minimumNumberOfRowsRequired"></param>
         /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
         /// <returns></returns>
-        public IReadOnlyCollection<IWebElement> WaitForMinimumRowsToLoadAndReturn(int minimumNumberOfRowsRequired, bool useLongWait = false)
+        public IReadOnlyCollection<IWebElement> WaitForMinimumRowsToLoadAndReturn(
+            int minimumNumberOfRowsRequired, 
+            bool useLongWait = false,
+            bool useBy = false)
         {
-            return FindElementsWithWaitForMinimumElements(TableRowCssSelector, minimumNumberOfRowsRequired, useLongWait);
+            return useBy ?
+                FindElementsWithWaitForMinimumElements(By.TagName("tr"), minimumNumberOfRowsRequired, useLongWait):
+                FindElementsWithWaitForMinimumElements(TableRowCssSelector, minimumNumberOfRowsRequired, useLongWait);
         }
 
         /// <summary>
@@ -58,10 +64,16 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// </summary>
         /// <param name="maximumNumberOfRowsRequired"></param>
         /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
         /// <returns></returns>
-        public IReadOnlyCollection<IWebElement> WaitForMaximumRowsToLoadAndReturn(int maximumNumberOfRowsRequired, bool useLongWait = false)
+        public IReadOnlyCollection<IWebElement> WaitForMaximumRowsToLoadAndReturn(
+            int maximumNumberOfRowsRequired, 
+            bool useLongWait = false,
+            bool useBy = false)
         {
-            return FindElementsWithWaitForMaximumElements(By.TagName("tr"), maximumNumberOfRowsRequired, useLongWait);
+            return useBy ?
+                FindElementsWithWaitForMaximumElements(By.TagName("tr"), maximumNumberOfRowsRequired, useLongWait) :
+                FindElementsWithWaitForMaximumElements(TableRowCssSelector, maximumNumberOfRowsRequired, useLongWait);
         }
     }
 }

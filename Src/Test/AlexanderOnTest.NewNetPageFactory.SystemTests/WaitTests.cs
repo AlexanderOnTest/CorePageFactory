@@ -20,38 +20,44 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
         [TestCase(false, 5)]
         [TestCase(true, 30)]
-        public void DefaultWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        public void DefaultWaitTimesOutAfterExpectedTime(
+            bool useLongWait, 
+            int expectedTimeoutInSeconds)
         {
             //Ensure we are using default timeouts
             TestPage.NonExistentBlock = new NonExistentBlock(Driver);
 
-            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait, false);
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
         }
 
-        [TestCase(false, 1)]
-        [TestCase(true, 2)]
-        public void DefinedWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        [TestCase(false, 1, true)]
+        [TestCase(true, 2, true)]
+        [TestCase(false, 1, false)]
+        [TestCase(true, 2, false)]
+        public void DefinedWaitTimesOutAfterExpectedTime(
+            bool useLongWait, 
+            int expectedTimeoutInSeconds,
+            bool useBy)
         {
             //Ensure we are using shorter / non default timeouts
             TestPage.NonExistentBlock = new NonExistentBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
-            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait, useBy);
             act
                 .Should().Throw<WebDriverTimeoutException>()
-                .WithMessage($"Timed out after {expectedTimeoutInSeconds} seconds*");
+                .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
         }
-
         
         [TestCase(false, 1)]
         [TestCase(true, 2)]
-        public void MinimumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        public void MinimumElementWaitUsingCssSelectorTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
         {
             //Ensure we are using shorter / non default timeouts
             TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
-            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait, false);
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage(
@@ -60,12 +66,40 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         
         [TestCase(false, 1)]
         [TestCase(true, 2)]
-        public void MaximumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        public void MinimumElementWaitUsingByTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
         {
             //Ensure we are using shorter / non default timeouts
             TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
-            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait, true);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: Less than 15 (By.TagName: tr) were found in the searched context.");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MaximumElementWaitUsingCssSelectorTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using shorter / non default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait, false);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: More than 2 (By.CssSelector: tr) were found in the searched context.");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MaximumElementWaitUsingByTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using shorter / non default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait, true);
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage(

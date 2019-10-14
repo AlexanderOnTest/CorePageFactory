@@ -48,12 +48,14 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// </summary>
         /// <param name="useLongWait"></param>
         /// <exception cref="Exception"></exception>
-        public void TimeoutFailingToFindNonExistentElement(bool useLongWait)
+        public IWebElement TimeoutFailingToFindNonExistentElement(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                NonExistentBlock.WaitToGetRootElement(useLongWait);
+                return useBy ?
+                    NonExistentBlock.FindNonExistentElement(useLongWait) :
+                    NonExistentBlock.WaitToGetRootElement(useLongWait);
             }
             catch (Exception ex)
             {
@@ -66,13 +68,14 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// Test minimum elements wait timeout duration by waiting for more rows to load than are in the DOM.
         /// </summary>
         /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
         /// <exception cref="Exception"></exception>
-        public void TimeoutFailingToWaitForMinRowsToLoad(bool useLongWait)
+        public void TimeoutFailingToWaitForMinRowsToLoad(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                TableBlock.WaitForMinimumRowsToLoadAndReturn(15, useLongWait);
+                TableBlock.WaitForMinimumRowsToLoadAndReturn(15, useLongWait, useBy);
             }
             catch (Exception ex)
             {
@@ -85,13 +88,14 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
         /// Test maximum elements wait timeout duration by waiting for more rows to load than are in the DOM.
         /// </summary>
         /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
         /// <exception cref="Exception"></exception>
-        public void TimeoutFailingToWaitForMaxRowsToLoad(bool useLongWait)
+        public void TimeoutFailingToWaitForMaxRowsToLoad(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                TableBlock.WaitForMaximumRowsToLoadAndReturn(2, useLongWait);
+                TableBlock.WaitForMaximumRowsToLoadAndReturn(2, useLongWait, useBy);
             }
             catch (Exception ex)
             {
