@@ -32,15 +32,11 @@ namespace AlexanderOnTest.NewNetPageFactory
             this.webDriverWait = new WebDriverWait(clock, driver, timeout, pollingInterval);
         }
 
-        public void IgnoreExceptionTypes(params Type[] exceptionTypes)
-        {
-            this.webDriverWait.IgnoreExceptionTypes(exceptionTypes);
-        }
+        public void IgnoreExceptionTypes(params Type[] exceptionTypes) 
+            => throw new InvalidOperationException($"Unsupported attempt to modify the ignored Exceptions of the immutable Wait for {parentClassName}");
 
-        public TResult Until<TResult>(Func<IWebDriver, TResult> condition)
-        {
-            return this.webDriverWait.Until(condition);
-        }
+        public TResult Until<TResult>(Func<IWebDriver, TResult> condition) 
+            => this.webDriverWait.Until(condition);
 
         public TimeSpan Timeout
         {

@@ -4,8 +4,17 @@ using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
 {
+    /// <summary>
+    /// Controller for the entire TestPage.html.
+    /// </summary>
     public class TestPage : Page
     {
+        /// <summary>
+        /// Construct a TestPage controller for TestPage.html
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="nonExistentBlock"></param>
+        /// <param name="tableBlock"></param>
         public TestPage(IWebDriver driver, 
             NonExistentBlock nonExistentBlock,
             TableBlock tableBlock) : base(driver)
@@ -14,8 +23,14 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
             this.TableBlock = tableBlock;
         }
 
+        /// <summary>
+        /// Return the controller for a block that does not exist in the DOM.
+        /// </summary>
         public NonExistentBlock NonExistentBlock { get; set; }
 
+        /// <summary>
+        /// Return the controller for a block controller for the table block.
+        /// </summary>
         public TableBlock TableBlock { get; set; }
 
         public override string GetExpectedPageTitle()
@@ -25,15 +40,20 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
 
         public override string GetExpectedUri()
         {
-            return "file:///C:/src/CorePageFactory/Src/Test/AlexanderOnTest.NewNetPageFactory.SystemTests/TestPages/TestPage.html";
+            return TestSettings.TestPageUriString;
         }
 
-        public void TimeoutFailingToFindNonExistentElement(bool useLongWait)
+        /// <summary>
+        /// Test timeout duration by waiting for the non existent block to load.
+        /// </summary>
+        /// <param name="useLongWait"></param>
+        /// <exception cref="Exception"></exception>
+        public IWebElement TimeoutFailingToFindRootElement(bool useLongWait)
         {
             DateTime start = DateTime.Now;
             try
             {
-                NonExistentBlock.WaitToGetRootElement(useLongWait);
+                return NonExistentBlock.WaitToGetRootElement(useLongWait);
             }
             catch (Exception ex)
             {
@@ -42,12 +62,18 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
             }
         }
 
-        public void TimeoutFailingToWaitForMinRowsToLoad(bool useLongWait)
+        /// <summary>
+        /// Test timeout duration by waiting for the non existent block to load.
+        /// </summary>
+        /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
+        /// <exception cref="Exception"></exception>
+        public IWebElement TimeoutFailingToFindNonExistentElement(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                TableBlock.WaitForMinimumRowsToLoadAndReturn(15, useLongWait);
+                return NonExistentBlock.FindNonExistentElement(useLongWait, useBy);
             }
             catch (Exception ex)
             {
@@ -56,12 +82,38 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers
             }
         }
 
-        public void TimeoutFailingToWaitForMaxRowsToLoad(bool useLongWait)
+        /// <summary>
+        /// Test minimum elements wait timeout duration by waiting for more rows to load than are in the DOM.
+        /// </summary>
+        /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
+        /// <exception cref="Exception"></exception>
+        public void TimeoutFailingToWaitForMinRowsToLoad(bool useLongWait, bool useBy)
         {
             DateTime start = DateTime.Now;
             try
             {
-                TableBlock.WaitForMaximumRowsToLoadAndReturn(2, useLongWait);
+                TableBlock.WaitForMinimumRowsToLoadAndReturn(15, useLongWait, useBy);
+            }
+            catch (Exception ex)
+            {
+                TestContext.WriteLine($"Wait timed out after {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Test maximum elements wait timeout duration by waiting for more rows to load than are in the DOM.
+        /// </summary>
+        /// <param name="useLongWait"></param>
+        /// <param name="useBy"></param>
+        /// <exception cref="Exception"></exception>
+        public void TimeoutFailingToWaitForMaxRowsToLoad(bool useLongWait, bool useBy)
+        {
+            DateTime start = DateTime.Now;
+            try
+            {
+                TableBlock.WaitForMaximumRowsToLoadAndReturn(2, useLongWait, useBy);
             }
             catch (Exception ex)
             {

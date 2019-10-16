@@ -1,30 +1,13 @@
-﻿using System;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
+﻿using OpenQA.Selenium;
 
 namespace AlexanderOnTest.NewNetPageFactory
 {
-    public abstract class Page
+    public abstract class Page : PageController, IPageData
     {
-        private readonly IWebDriver driver;
-
-        protected Page(IWebDriver driver)
-        {
-            this.driver = driver;
-        }
+        protected Page(IWebDriver driver) : base (driver) { }
 
         public abstract string GetExpectedPageTitle();
 
         public abstract string GetExpectedUri();
-
-        public string GetActualPageTitle()
-        {
-            return driver.Title;
-        }
-
-        public string GetActualUri()
-        {
-            return driver.Url;
-        }
     }
 }

@@ -7,6 +7,5 @@ addons:
   sonarcloud:
     organization: "alexanderontest-github"
 script:
- - dotnet build
- - dotnet test --no-build --filter=TestCategory=Unit
+ - dotnet test
  - sonar-scanner

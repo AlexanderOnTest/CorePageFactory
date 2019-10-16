@@ -15,11 +15,11 @@
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="Scrutor" Version="3.1.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="76.0.3809.12600" />
-    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.24.0.1" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="77.0.3865.4000" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.25.0" />
     <PackageReference Include="Selenium.WebDriver.IEDriver" Version="3.150.0" />
     <PackageReference Include="Selenium.WebDriver.NetCoreWebDriverFactory" Version="3.0.0" />
     <PackageReference Include="Selenium.WebDriver.WebDriverFactoryNunitConfig" Version="3.0.0" />
@@ -43,6 +43,13 @@
       <DependentUpon>log4net.config</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="TestPages\TestPage.html" />
+    <Content Include="TestPages\TestPage.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

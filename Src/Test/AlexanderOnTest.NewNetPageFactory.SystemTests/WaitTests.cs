@@ -1,29 +1,16 @@
 using System;
-using AlexanderOnTest.NetCoreWebDriverFactory;
-using AlexanderOnTest.NetCoreWebDriverFactory.Config;
-using AlexanderOnTest.NetCoreWebDriverFactory.DependencyInjection;
 using AlexanderOnTest.NetCoreWebDriverFactory.DriverManager;
-using AlexanderOnTest.NetCoreWebDriverFactory.Utils.Builders;
-using AlexanderOnTest.NetCoreWebDriverFactory.WebDriverFactory;
 using AlexanderOnTest.NewNetPageFactory.SystemTests.TestPageControllers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using Scrutor;
 
 namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class WaitTests
     {
-        private string TestPageUri =>
-            "file:///C:/src/CorePageFactory/Src/Test/AlexanderOnTest.NewNetPageFactory.SystemTests/TestPages/TestPage.html";
-
-        private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
-
         private IWebDriver Driver { get; set; }
-
-        private IWebDriverFactory WebDriverFactory { get; set; }
 
         private IWebDriverManager DriverManager { get; set; }
 
@@ -31,58 +18,106 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
         private TestPage TestPage { get; set; }
 
+        [TestCase(true, 2)]
+        [TestCase(false, 1)]
+        public void WaitForRootElementWorks(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            {
+                //Ensure we are using shorter / non default timeouts
+                TestPage.NonExistentBlock = new NonExistentBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+                Action act = () => TestPage.TimeoutFailingToFindRootElement(useLongWait);
+                act
+                    .Should().Throw<WebDriverTimeoutException>()
+                    .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
+            }
+        }
+        
         [TestCase(false, 5)]
         [TestCase(true, 30)]
-        public void DefaultWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        public void DefaultWaitTimesOutAfterExpectedTime(
+            bool useLongWait, 
+            int expectedTimeoutInSeconds)
         {
             //Ensure we are using default timeouts
             TestPage.NonExistentBlock = new NonExistentBlock(Driver);
 
-            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait, false);
             act
                 .Should().Throw<WebDriverTimeoutException>()
-                .WithMessage($"Timed out after {expectedTimeoutInSeconds} seconds*");
+                .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
         }
 
-        [TestCase(false, 1)]
-        [TestCase(true, 2)]
-        public void DefinedWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        [TestCase(false, 1, true)]
+        [TestCase(true, 2, true)]
+        [TestCase(false, 1, false)]
+        [TestCase(true, 2, false)]
+        public void DefinedWaitTimesOutAfterExpectedTime(
+            bool useLongWait, 
+            int expectedTimeoutInSeconds,
+            bool useBy)
         {
             //Ensure we are using shorter / non default timeouts
             TestPage.NonExistentBlock = new NonExistentBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
-            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToFindNonExistentElement(useLongWait, useBy);
             act
                 .Should().Throw<WebDriverTimeoutException>()
-                .WithMessage($"Timed out after {expectedTimeoutInSeconds} seconds*");
-        }
-
-        
-        [TestCase(false, 1)]
-        [TestCase(true, 2)]
-        public void MinimumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
-        {
-            //Ensure we are using default timeouts
-            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
-
-            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait);
-            act
-                .Should().Throw<WebDriverTimeoutException>()
-                .WithMessage(
-                    $"Timed out after {expectedTimeoutInSeconds} seconds: Less than 15 of By By.TagName: tr were returned - Wait Condition not met");
+                .WithMessage($"Timed out after {expectedTimeoutInSeconds.ToString()} seconds*");
         }
         
         [TestCase(false, 1)]
         [TestCase(true, 2)]
-        public void MaximumElementWaitTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        public void MinimumElementWaitUsingCssSelectorTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
         {
-            //Ensure we are using default timeouts
+            //Ensure we are using shorter / non default timeouts
             TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
 
-            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait);
+            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait, false);
             act
                 .Should().Throw<WebDriverTimeoutException>()
                 .WithMessage(
-                    $"Timed out after {expectedTimeoutInSeconds} seconds: More than 2 of By By.TagName: tr were returned - Wait Condition not met");
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: Less than 15 (By.CssSelector: tr) were found in the searched context.");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MinimumElementWaitUsingByTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using shorter / non default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMinRowsToLoad(useLongWait, true);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: Less than 15 (By.TagName: tr) were found in the searched context.");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MaximumElementWaitUsingCssSelectorTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using shorter / non default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait, false);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: More than 2 (By.CssSelector: tr) were found in the searched context.");
+        }
+        
+        [TestCase(false, 1)]
+        [TestCase(true, 2)]
+        public void MaximumElementWaitUsingByTimesOutAfterExpectedTime(bool useLongWait, int expectedTimeoutInSeconds)
+        {
+            //Ensure we are using shorter / non default timeouts
+            TestPage.TableBlock = new TableBlock(Driver, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2));
+
+            Action act = () => TestPage.TimeoutFailingToWaitForMaxRowsToLoad(useLongWait, true);
+            act
+                .Should().Throw<WebDriverTimeoutException>()
+                .WithMessage(
+                    $"Timed out after {expectedTimeoutInSeconds.ToString()} seconds: More than 2 (By.TagName: tr) were found in the searched context.");
         }
 
         #region SetUpTearDown
@@ -91,45 +126,11 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            // Force local Browser running for local file
-            IWebDriverConfiguration driverConfig =
-                WebDriverConfigurationBuilder.Start()
-                    .RunHeadless()
-                    .WithBrowser(Browser.Chrome)
-                    .WithWindowSize(WindowSize.Fhd)
-                    .Build();
-            
-            DriverManager = ServiceCollectionFactory.GetDefaultServiceCollection(true, driverConfig)
-                .BuildServiceProvider()
-                .GetRequiredService<IWebDriverManager>();
-
-            
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IWebDriver>(DriverManager.Get());
-
-            serviceCollection.Scan(scan => scan
-                .FromAssemblyOf<PageTests>()
-                .AddClasses()
-                .UsingRegistrationStrategy(RegistrationStrategy.Skip)
-                .AsSelf()
-                .WithSingletonLifetime());
-
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-
+            ServiceProvider = ConfigurationModule.GetServiceProvider(true);
+            DriverManager = ServiceProvider.GetRequiredService<IWebDriverManager>();
             Driver = ServiceProvider.GetRequiredService<IWebDriver>();
             TestPage = ServiceProvider.GetRequiredService<TestPage>();
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            Driver = DriverManager.Get();
-            Driver.Url = TestPageUri;
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
+            Driver.Url = TestSettings.TestPageUriString;
         }
 
         [OneTimeTearDown]
@@ -137,7 +138,6 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         {
             DriverManager.Quit();
             DriverManager?.Dispose();
-            WebDriverFactory?.Dispose();
         }
 
         #endregion
