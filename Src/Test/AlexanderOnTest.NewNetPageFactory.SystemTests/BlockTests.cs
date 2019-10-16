@@ -58,6 +58,24 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 
             tableBlock.GetRootElement().Should().Be(rootElement);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void FindElementsWithWaitForMinimumElementsReturnsCorrectList(bool useBy)
+        {
+            TableBlock tableBlock = new TableBlock(this.Driver);
+
+            tableBlock.WaitForMinimumRowsToLoadAndReturn(2, false, useBy).Should().HaveCount(13);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void FindElementsWithWaitForMaximumElementsReturnsCorrectList(bool useBy)
+        {
+            TableBlock tableBlock = new TableBlock(this.Driver);
+
+            tableBlock.WaitForMaximumRowsToLoadAndReturn(14, false, useBy).Should().HaveCount(13);
+        }
         
         #region SetUpTearDown
 
