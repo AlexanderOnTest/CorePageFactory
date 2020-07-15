@@ -11,11 +11,11 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class BlockTests
     {
-        private IWebDriver Driver { get; set; }
-
-        private IWebDriverManager DriverManager { get; set; }
-
         private IServiceProvider ServiceProvider { get; set; }
+
+        private IWebDriverManager DriverManager => ServiceProvider.GetRequiredService<IWebDriverManager>();
+
+        private IWebDriver Driver => ServiceProvider.GetRequiredService<IWebDriver>();
 
         [Test]
         public void GetRootElementReturnsCorrectElementInCssSelectorDefinedBlock()
@@ -83,15 +83,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void OneTimeSetUp()
         {
             ServiceProvider = ConfigurationModule.GetServiceProvider(true);
-            DriverManager = ServiceProvider.GetRequiredService<IWebDriverManager>();
-            Driver = ServiceProvider.GetRequiredService<IWebDriver>();
             Driver.Url = TestSettings.TestPageUriString;
         }
 
         [OneTimeTearDown]
         public void Cleanup()
         {
-            DriverManager.Quit();
+            DriverManager?.Quit();
             DriverManager?.Dispose();
         }
 

@@ -12,13 +12,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
     {
         private string TestPageTitle => "AlexanderOnTest - PageFactory Test Page";
 
-        private IWebDriver Driver { get; set; }
-
-        private IWebDriverManager DriverManager { get; set; }
-
         private IServiceProvider ServiceProvider { get; set; }
 
-        private TestPage TestPage { get; set; }
+        private IWebDriver Driver => ServiceProvider.GetRequiredService<IWebDriver>();
+
+        private IWebDriverManager DriverManager => ServiceProvider.GetRequiredService<IWebDriverManager>();
+
+        private TestPage TestPage => ServiceProvider.GetRequiredService<TestPage>();
 
         [Test]
         public void ExpectedTitleIsReturnedCorrectly()
@@ -51,16 +51,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void OneTimeSetUp()
         {
             ServiceProvider = ConfigurationModule.GetServiceProvider(true);
-            DriverManager = ServiceProvider.GetRequiredService<IWebDriverManager>();
-            Driver = ServiceProvider.GetRequiredService<IWebDriver>();
-            TestPage = ServiceProvider.GetRequiredService<TestPage>();
             Driver.Url = TestSettings.TestPageUriString;
         }
 
         [OneTimeTearDown]
         public void Cleanup()
         {
-            DriverManager.Quit();
+            DriverManager?.Quit();
             DriverManager?.Dispose();
         }
 
