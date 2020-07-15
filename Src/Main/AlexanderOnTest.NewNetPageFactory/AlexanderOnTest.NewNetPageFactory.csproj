@@ -3,10 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectGuid>{E68B548A-18EC-4FF0-8C7C-871043FB80B5}</ProjectGuid>
+    <PackageVersion>0.8.0</PackageVersion>
+    <Title>Atomic Page Objects</Title>
+    <Description>PageObject bases using atomic locator strategies</Description>
+    <Copyright>2020 Alexander Oliveira Dunn</Copyright>
+    <AssemblyVersion>0.8.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibLog" Version="5.0.6">
+    <PackageReference Include="LibLog" Version="5.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -10,13 +10,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
 {
     public class WaitTests
     {
-        private IWebDriver Driver { get; set; }
-
-        private IWebDriverManager DriverManager { get; set; }
-
         private IServiceProvider ServiceProvider { get; set; }
 
-        private TestPage TestPage { get; set; }
+        private IWebDriverManager DriverManager => ServiceProvider.GetRequiredService<IWebDriverManager>();
+
+        private IWebDriver Driver => ServiceProvider.GetRequiredService<IWebDriver>();
+
+        private TestPage TestPage => ServiceProvider.GetRequiredService<TestPage>();
 
         [TestCase(true, 2)]
         [TestCase(false, 1)]
@@ -127,16 +127,13 @@ namespace AlexanderOnTest.NewNetPageFactory.SystemTests
         public void OneTimeSetUp()
         {
             ServiceProvider = ConfigurationModule.GetServiceProvider(true);
-            DriverManager = ServiceProvider.GetRequiredService<IWebDriverManager>();
-            Driver = ServiceProvider.GetRequiredService<IWebDriver>();
-            TestPage = ServiceProvider.GetRequiredService<TestPage>();
             Driver.Url = TestSettings.TestPageUriString;
         }
 
         [OneTimeTearDown]
         public void Cleanup()
         {
-            DriverManager.Quit();
+            DriverManager?.Quit();
             DriverManager?.Dispose();
         }
 

@@ -15,12 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="5.2.0" />
+    <PackageReference Include="FakeItEasy" Version="5.5.0" />
     <PackageReference Include="FluentAssertions" Version="5.7.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="NunitXml.TestLogger" Version="2.1.41" />
     <PackageReference Include="Selenium.WebDriver.NetCoreWebDriverFactory" Version="3.0.0" />
     <PackageReference Include="Selenium.WebDriver.WebDriverFactoryNunitConfig" Version="3.0.0" />
