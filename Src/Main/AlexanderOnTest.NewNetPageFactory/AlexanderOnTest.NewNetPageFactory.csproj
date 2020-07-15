@@ -9,6 +9,7 @@
     <Copyright>2020 Alexander Oliveira Dunn</Copyright>
     <AssemblyVersion>0.8.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
